@@ -67,6 +67,34 @@
     }
     button:hover { background: rgba(255,255,255,0.12); }
     button:active { transform: translateY(1px); }
+
+    .dpad {
+      display: none;
+      gap: 10px;
+      justify-items: center;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+    }
+    .dpad .row { display: flex; gap: 10px; }
+    .dpad .row.small { gap: 10px; }
+    .dpad .pad {
+      width: 64px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      padding: 0;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .dpad .row.small .pad { width: 110px; font-size: 14px; }
+
+    @media (max-width: 720px) {
+      .dpad { display: grid; }
+    }
+
     .footer {
       display:flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
       font-size: 12px; color: rgba(230,237,243,0.65);
@@ -93,7 +121,21 @@
         Controls: <b>Arrow keys</b> or <b>WASD</b> • <b>Space</b> pause • <b>R</b> restart • On mobile: swipe on the board.
       </div>
       <button id="btn">Start</button>
+    
+
+    <div class="dpad" aria-label="On-screen controls">
+      <button class="pad" data-dir="up" aria-label="Up">▲</button>
+      <div class="row">
+        <button class="pad" data-dir="left" aria-label="Left">◀</button>
+        <button class="pad" data-dir="down" aria-label="Down">▼</button>
+        <button class="pad" data-dir="right" aria-label="Right">▶</button>
+      </div>
+      <div class="row small">
+        <button class="pad" data-action="pause" aria-label="Pause or resume">Pause</button>
+        <button class="pad" data-action="restart" aria-label="Restart">Restart</button>
+      </div>
     </div>
+</div>
 
     <div class="footer">
       <div>GitHub Pages demo • No dependencies</div>
@@ -347,6 +389,27 @@
     }
     if (paused && !state.over) start();
   }, {passive:true});
+
+
+
+  // on-screen buttons (mobile)
+  const dirMap = { up:[0,-1], down:[0,1], left:[-1,0], right:[1,0] };
+  const padButtons = document.querySelectorAll('.dpad .pad');
+  padButtons.forEach(b => {
+    const dir = b.getAttribute('data-dir');
+    const action = b.getAttribute('data-action');
+    const handler = (e) => {
+      e.preventDefault();
+      if (action === 'pause') { togglePause(); return; }
+      if (action === 'restart') { reset(); start(); return; }
+      if (dir && dirMap[dir]) {
+        setDir(dirMap[dir]);
+        if (paused && !state.over) start();
+      }
+    };
+    b.addEventListener('pointerdown', handler, {passive:false});
+    b.addEventListener('click', handler, {passive:false});
+  });
 
   // init
   reset();
