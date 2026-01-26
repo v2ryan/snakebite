@@ -202,7 +202,8 @@
     bestEl.textContent = String(loadBest());
     statusEl.textContent = 'Ready';
     btn.textContent = 'Start';
-    draw();
+  placeFood();
+  draw();
   }
 
   function setStatus(txt){ statusEl.textContent = txt; }
@@ -413,7 +414,6 @@
 
   // init
   reset();
-  placeFood();
   draw();
 })();
 </script>
