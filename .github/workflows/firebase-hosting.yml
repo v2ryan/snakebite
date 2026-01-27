@@ -22,8 +22,6 @@ jobs:
       - name: Deploy
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
-          # Override project id at deploy time
-          firebase use "$FIREBASE_PROJECT_ID" --add || true
-          firebase deploy --only hosting,firestore:rules
+          # Use explicit project id (avoid relying on .firebaserc)
+          firebase deploy --project snake-ad6ee --only hosting,firestore:rules
