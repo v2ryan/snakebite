@@ -17,12 +17,15 @@ jobs:
           node-version: 20
 
       - name: Install Firebase CLI
-        run: npm i -g firebase-tools
+        run: npm i -g firebase-tools@latest
+
+      - name: Firebase version
+        run: firebase --version
 
       - name: Deploy
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           # Deploy hosting (site is pinned in firebase.json) + apply Firestore rules
-          firebase deploy --project snake-ad6ee --only hosting
-          firebase deploy --project snake-ad6ee --only firestore:rules
+          firebase deploy --project snake-ad6ee --only hosting --debug
+          firebase deploy --project snake-ad6ee --only firestore:rules --debug
