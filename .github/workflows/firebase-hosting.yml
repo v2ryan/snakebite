@@ -23,6 +23,6 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          # Deploy hosting to the named site + apply Firestore rules
-          firebase deploy --project snake-ad6ee --only hosting --site snake-ad6ee
+          # Deploy hosting (site is pinned in firebase.json) + apply Firestore rules
+          firebase deploy --project snake-ad6ee --only hosting
           firebase deploy --project snake-ad6ee --only firestore:rules
