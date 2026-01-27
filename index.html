@@ -3,540 +3,502 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>snakebite</title>
+  <title>snakebite — gear</title>
+  <meta name="description" content="Outdoor/tactical gear page with filters." />
   <style>
-    :root { color-scheme: dark; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 50% 40%, #1b263a 0%, #0b1020 55%, #060914 100%);
-      color: #e6edf3;
+    :root{
+      --bg0:#0b0f0b;
+      --bg1:#101712;
+      --panel:#0f1712;
+      --panel2:#0c140f;
+      --ink:#e9f0e6;
+      --muted:rgba(233,240,230,.74);
+      --muted2:rgba(233,240,230,.56);
+      --line:rgba(233,240,230,.10);
+      --line2:rgba(233,240,230,.16);
+      --olive:#5c7a45;
+      --moss:#2f5a3d;
+      --tan:#cbb48d;
+      --accent:#8bd3a8;
+      --danger:#ff6b6b;
+      --shadow: 0 18px 40px rgba(0,0,0,.45);
+      --radius: 16px;
+      color-scheme: dark;
     }
-    .wrap {
-      width: min(92vw, 720px);
-      display: grid;
-      gap: 14px;
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      background: rgba(0,0,0,0.25);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-    header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-    h1 { font-size: 18px; margin: 0; letter-spacing: 0.3px; }
-    .meta { display:flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.10);
-      font-size: 12px;
-      color: rgba(230,237,243,0.9);
-    }
-    canvas {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 12px;
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--ink);
       background:
-        linear-gradient(transparent 31px, rgba(255,255,255,0.035) 32px),
-        linear-gradient(90deg, transparent 31px, rgba(255,255,255,0.035) 32px),
-        linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-      background-size: 32px 32px, 32px 32px, cover;
-      border: 1px solid rgba(255,255,255,0.10);
-      image-rendering: pixelated;
+        radial-gradient(1200px 800px at 70% 10%, rgba(140,211,168,.10) 0%, transparent 60%),
+        radial-gradient(900px 700px at 10% 30%, rgba(203,180,141,.10) 0%, transparent 62%),
+        linear-gradient(180deg, var(--bg1), var(--bg0));
+      min-height:100vh;
     }
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-    }
-    .help { font-size: 12px; line-height: 1.4; color: rgba(230,237,243,0.75); }
-    button {
-      appearance: none;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.08);
-      color: #e6edf3;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:hover { background: rgba(255,255,255,0.12); }
-    button:active { transform: translateY(1px); }
 
-    .dpad {
-      display: none;
-      gap: 10px;
-      justify-items: center;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
+    /* Topo-map texture (offline, SVG data URI) */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.35;
+      mix-blend-mode:screen;
+      background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'><rect width='520' height='520' fill='none'/><g fill='none' stroke='%23a7c4a7' stroke-opacity='.18' stroke-width='1.4'><path d='M30 120 C140 40, 220 70, 310 110 S470 190, 490 80'/><path d='M40 180 C160 120, 250 150, 330 170 S470 250, 510 150'/><path d='M20 260 C120 210, 230 230, 320 260 S470 330, 520 250'/><path d='M10 320 C110 290, 250 300, 340 330 S480 420, 520 350'/><path d='M60 420 C160 370, 240 390, 330 420 S460 480, 520 440'/><path d='M120 40 C140 120, 120 190, 80 240 S40 360, 120 500'/><path d='M210 20 C250 120, 230 210, 190 270 S170 390, 250 520'/><path d='M320 20 C360 120, 340 230, 310 290 S300 410, 360 520'/><path d='M430 20 C470 120, 450 220, 420 280 S410 410, 470 520'/></g><g opacity='.18'><circle cx='95' cy='95' r='2' fill='%23cbb48d'/><circle cx='420' cy='180' r='2' fill='%23cbb48d'/><circle cx='250' cy='410' r='2' fill='%23cbb48d'/></g></svg>");
+      filter: blur(.2px);
     }
-    .dpad .row { display: flex; gap: 10px; }
-    .dpad .row.small { gap: 10px; }
-    .dpad .pad {
-      width: 64px;
-      height: 52px;
-      display: grid;
-      place-items: center;
+
+    .container{
+      width:min(1060px, 92vw);
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding: 18px 20px;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(15,23,18,.72), rgba(8,12,9,.55));
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 14px;
+      backdrop-filter: blur(10px);
+      z-index: 5;
+    }
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width: 210px;
+    }
+
+    .brand h1{
+      margin:0;
       font-size: 18px;
-      padding: 0;
-      user-select: none;
-      touch-action: manipulation;
-    }
-    .dpad .row.small .pad { width: 110px; font-size: 14px; }
-
-    @media (max-width: 720px) {
-      .dpad { display: grid; }
+      letter-spacing: .6px;
+      text-transform: uppercase;
     }
 
-    .leaderboard{
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
+    .brand .sub{
+      margin:0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .chip{
+      border:1px solid var(--line2);
+      background: rgba(255,255,255,.06);
+      color: var(--ink);
+      padding: 9px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      line-height: 1;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .chip[aria-pressed="true"]{
+      border-color: rgba(139,211,168,.45);
+      background: rgba(139,211,168,.12);
+    }
+
+    .chip .count{
+      font-variant-numeric: tabular-nums;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .chip .dot{
+      width:8px;height:8px;border-radius:99px;
+      background: var(--tan);
+      box-shadow: 0 0 0 2px rgba(0,0,0,.35);
+    }
+
+    .chip[data-cat="all"] .dot{ background: var(--accent); }
+    .chip[data-cat="Essentials"] .dot{ background: #cbb48d; }
+    .chip[data-cat="Tools"] .dot{ background: #8bd3a8; }
+    .chip[data-cat="Med"] .dot{ background: #ff8b8b; }
+    .chip[data-cat="Clothing"] .dot{ background: #8db5ff; }
+
+    .hero{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .panel{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(16,23,18,.72), rgba(10,14,10,.55));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .panel .inner{ padding: 16px 16px 14px; }
+
+    .titleRow{
+      display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+    }
+
+    h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      color: rgba(233,240,230,.92);
+    }
+
+    .muted{ color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    .kpi{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;
+    }
+    .kpi .pill{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      padding: 8px 10px;
       border-radius: 12px;
-      padding: 12px;
-      display: grid;
-      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      display:flex;
+      gap:8px;
+      align-items:center;
+      white-space:nowrap;
     }
-    .lb-title{font-weight:800; font-size:12px; letter-spacing:.2px; color:rgba(230,237,243,.85)}
-    .lb-list{margin:0; padding-left: 18px; color:rgba(230,237,243,.9)}
-    .lb-list li{margin:4px 0; font-size:12px}
-    .lb-muted{color:rgba(230,237,243,.65); font-size:12px}
+    .kpi strong{ color: var(--ink); font-weight: 750; }
 
-    .footer {
-      display:flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-      font-size: 12px; color: rgba(230,237,243,0.65);
+    .link{
+      color: rgba(139,211,168,.95);
+      text-decoration:none;
+      border-bottom: 1px dashed rgba(139,211,168,.35);
     }
-    a { color: rgba(120,200,255,0.95); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    .link:hover{ border-bottom-style: solid; }
+
+    .grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(10,14,10,.45), rgba(0,0,0,.12)),
+        radial-gradient(600px 140px at 50% 0%, rgba(203,180,141,.10), transparent 55%);
+      border-radius: 14px;
+      overflow:hidden;
+      transition: transform .12s ease, border-color .12s ease;
+      position: relative;
+    }
+
+    .card:hover{ transform: translateY(-2px); border-color: rgba(233,240,230,.18); }
+
+    .card .media{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 12px;
+      background:
+        linear-gradient(90deg, rgba(139,211,168,.06), transparent 40%),
+        linear-gradient(180deg, rgba(255,255,255,.04), transparent 60%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card img{
+      width: 100%;
+      height: 110px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.45));
+    }
+
+    .card .body{ padding: 12px; display:grid; gap: 8px; }
+
+    .card .top{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+
+    .card h3{ margin:0; font-size: 14px; letter-spacing:.2px; }
+
+    .badge{
+      font-size: 11px;
+      border: 1px solid var(--line2);
+      color: var(--muted);
+      padding: 5px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      background: rgba(0,0,0,.18);
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+
+    .tag{
+      font-size: 11px;
+      color: rgba(233,240,230,.72);
+      border: 1px solid rgba(233,240,230,.12);
+      background: rgba(0,0,0,.18);
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .hidden{ display:none !important; }
+
+    .footer{
+      margin-top: 14px;
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted2);
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: repeat(2, 1fr); }
+      .hero{ grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px){
+      header{ align-items:flex-start; }
+      .grid{ grid-template-columns: 1fr; }
+      .brand{ min-width: auto; }
+    }
+
+    /* Rugged corner mark */
+    .card::after{
+      content:"";
+      position:absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px dashed rgba(233,240,230,.18);
+      transform: rotate(7deg);
+      opacity: .55;
+    }
+
+    /* Subtle grit */
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.5) 0 1px, transparent 2px),
+        radial-gradient(circle at 70% 40%, rgba(255,255,255,.4) 0 1px, transparent 2px),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,.35) 0 1px, transparent 2px);
+      background-size: 90px 90px, 120px 120px, 140px 140px;
+      mix-blend-mode: overlay;
+    }
+    .panel{ position:relative; }
+
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <main class="container">
     <header>
-      <h1>snakebite</h1>
-      <div class="meta">
-        <span class="pill">Score: <span id="score">0</span></span>
-        <span class="pill">Best: <span id="best">0</span></span>
-        <span class="pill" id="status">Ready</span>
+      <div class="brand">
+        <h1>snakebite</h1>
+        <p class="sub">Field kit • Outdoor / tactical • Offline-friendly placeholders</p>
       </div>
+
+      <nav class="nav" aria-label="Filters">
+        <button class="chip" data-cat="all" aria-pressed="true"><span class="dot"></span>All <span class="count" id="count-all">0</span></button>
+        <button class="chip" data-cat="Essentials" aria-pressed="false"><span class="dot"></span>Essentials <span class="count" id="count-Essentials">0</span></button>
+        <button class="chip" data-cat="Tools" aria-pressed="false"><span class="dot"></span>Tools <span class="count" id="count-Tools">0</span></button>
+        <button class="chip" data-cat="Med" aria-pressed="false"><span class="dot"></span>Med <span class="count" id="count-Med">0</span></button>
+        <button class="chip" data-cat="Clothing" aria-pressed="false"><span class="dot"></span>Clothing <span class="count" id="count-Clothing">0</span></button>
+      </nav>
     </header>
 
-    <canvas id="c" width="640" height="640" aria-label="Snake game"></canvas>
-
-    <div class="controls">
-      <div class="help">
-        Controls: <b>Arrow keys</b> or <b>WASD</b> • <b>Space</b> pause • <b>R</b> restart • On mobile: swipe on the board.
+    <section class="hero" aria-label="Overview">
+      <div class="panel">
+        <div class="inner">
+          <div class="titleRow">
+            <h2>Gear Loadout</h2>
+            <div class="muted"><a class="link" href="./game.html">Play Snake</a> • <a class="link" href="https://github.com/v2ryan/snakebite" target="_blank" rel="noreferrer">Source</a></div>
+          </div>
+          <p class="muted">A simple gear list page (A+B+D): card grid + topo vibe + category filters. Everything is static and works offline (images are inline SVG).</p>
+          <div class="kpi" aria-label="Stats">
+            <div class="pill">Items: <strong id="kpi-total">0</strong></div>
+            <div class="pill">Showing: <strong id="kpi-showing">0</strong></div>
+            <div class="pill">Mode: <strong id="kpi-mode">All</strong></div>
+          </div>
+        </div>
       </div>
-      <button id="btn">Start</button>
-    
 
-    <div class="dpad" aria-label="On-screen controls">
-      <button class="pad" data-dir="up" aria-label="Up">▲</button>
-      <div class="row">
-        <button class="pad" data-dir="left" aria-label="Left">◀</button>
-        <button class="pad" data-dir="down" aria-label="Down">▼</button>
-        <button class="pad" data-dir="right" aria-label="Right">▶</button>
+      <aside class="panel" aria-label="Notes">
+        <div class="inner">
+          <div class="titleRow">
+            <h2>Notes</h2>
+            <div class="muted">v1</div>
+          </div>
+          <p class="muted">
+            Tips: keep it light, keep it dry, and label everything. This page is a template — replace items with your real kit photos later.
+          </p>
+          <p class="muted">
+            Want a separate page? You can rename this to <code>gear.html</code> and make <code>index.html</code> redirect.
+          </p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel" style="margin-top:14px" aria-label="Gear grid">
+      <div class="inner">
+        <div class="titleRow">
+          <h2>Inventory</h2>
+          <div class="muted" id="hint">Tap a filter to narrow down.</div>
+        </div>
+        <div class="grid" id="grid" aria-live="polite"></div>
+        <div class="footer">
+          <div>Outdoor palette • topo texture • rugged cards</div>
+          <div>Filters are instant (small JS)</div>
+        </div>
       </div>
-      <div class="row small">
-        <button class="pad" data-action="pause" aria-label="Pause or resume">Pause</button>
-        <button class="pad" data-action="restart" aria-label="Restart">Restart</button>
-      </div>
-    </div>
-</div>
+    </section>
+  </main>
 
-    <div class="leaderboard" id="leaderboard">
-      <div class="lb-title">Top 10 排行榜</div>
-      <ol class="lb-list" id="lbList"><li class="lb-muted">載入中…</li></ol>
-      <div class="lb-muted" id="lbHint">完成一局後會自動提交分數（匿名）</div>
-    </div>
+  <script>
+    const svgData = (title, accent, glyph) => {
+      // A small “label” style illustration (offline)
+      const svg = `<?xml version="1.0" encoding="UTF-8"?>
+      <svg xmlns="http://www.w3.org/2000/svg" width="560" height="280" viewBox="0 0 560 280">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0e1611"/>
+            <stop offset="1" stop-color="#0a100c"/>
+          </linearGradient>
+          <pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M0 20 H40" stroke="#ffffff" stroke-opacity=".06"/>
+            <path d="M20 0 V40" stroke="#ffffff" stroke-opacity=".06"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="560" height="280" rx="22" fill="url(#g)"/>
+        <rect x="14" y="14" width="532" height="252" rx="18" fill="url(#p)" opacity=".55"/>
+        <rect x="24" y="24" width="512" height="232" rx="16" fill="none" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/>
 
-    <div class="footer">
-      <div>GitHub Pages demo • No dependencies</div>
-      <div><a href="https://github.com/v2ryan/snakebite" target="_blank" rel="noreferrer">source</a></div>
-    </div>
-  </div>
+        <circle cx="86" cy="90" r="44" fill="${accent}" fill-opacity=".22" stroke="#ffffff" stroke-opacity=".18"/>
+        <path d="M62 90 h48" stroke="#ffffff" stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
+        <path d="M86 66 v48" stroke="#ffffff" stroke-opacity=".40" stroke-width="6" stroke-linecap="round"/>
 
-<script>
-(() => {
-  const canvas = document.getElementById('c');
-  const ctx = canvas.getContext('2d');
-  const scoreEl = document.getElementById('score');
-  const bestEl  = document.getElementById('best');
-  const statusEl= document.getElementById('status');
-  const btn = document.getElementById('btn');
+        <text x="150" y="102" font-family="ui-sans-serif, system-ui" font-size="26" fill="#e9f0e6" font-weight="800">${title}</text>
+        <text x="150" y="134" font-family="ui-sans-serif, system-ui" font-size="13" fill="#e9f0e6" opacity=".72">FIELD LABEL • OFFLINE SVG</text>
 
-  const GRID = 20;                 // 20x20 grid
-  const CELL = canvas.width / GRID;
-  const TICK_MS_START = 140;
-  const SPEEDUP_EVERY = 6;         // speed up after every N foods
-  const SPEEDUP_FACTOR = 0.92;
-
-  const keyDirs = {
-    'ArrowUp': [0,-1], 'KeyW':[0,-1],
-    'ArrowDown':[0,1], 'KeyS':[0,1],
-    'ArrowLeft':[-1,0], 'KeyA':[-1,0],
-    'ArrowRight':[1,0], 'KeyD':[1,0],
-  };
-
-  let state;
-  let raf = null;
-  let last = 0;
-  let acc = 0;
-  let paused = true;
-
-  function randCell(exceptSet) {
-    while (true) {
-      const x = Math.floor(Math.random()*GRID);
-      const y = Math.floor(Math.random()*GRID);
-      const k = x+','+y;
-      if (!exceptSet.has(k)) return {x,y};
-    }
-  }
-
-  function loadBest() {
-    const v = Number(localStorage.getItem('snakebite_best')||'0');
-    return Number.isFinite(v) ? v : 0;
-  }
-  function saveBest(v){ localStorage.setItem('snakebite_best', String(v)); }
-
-  function reset() {
-    const start = {x: Math.floor(GRID/2), y: Math.floor(GRID/2)};
-    state = {
-      snake: [start, {x:start.x-1, y:start.y}, {x:start.x-2, y:start.y}],
-      dir: [1,0],
-      nextDir: [1,0],
-      score: 0,
-      foods: 0,
-      tickMs: TICK_MS_START,
-      over: false,
+        <text x="46" y="210" font-family="ui-sans-serif, system-ui" font-size="34" fill="#e9f0e6" opacity=".85">${glyph}</text>
+        <path d="M150 168 h360" stroke="#ffffff" stroke-opacity=".12" stroke-width="2" stroke-dasharray="6 8"/>
+      </svg>`;
+      return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
     };
-    paused = true;
-    scoreEl.textContent = '0';
-    bestEl.textContent = String(loadBest());
-    statusEl.textContent = 'Ready';
-    btn.textContent = 'Start';
-  placeFood();
-  draw();
-  }
 
-  function setStatus(txt){ statusEl.textContent = txt; }
+    const items = [
+      {cat:"Essentials", name:"Water Bottle (1L)", desc:"Hydration first. Wide mouth, easy to clean.", tags:["hydration","durable"], img: svgData("Water", "#8bd3a8", "💧")},
+      {cat:"Essentials", name:"Headlamp", desc:"Hands-free light with red mode.", tags:["light","night"], img: svgData("Headlamp", "#cbb48d", "🔦")},
+      {cat:"Essentials", name:"Power Bank", desc:"Compact backup power for phone/GPS.", tags:["power","usb-c"], img: svgData("Power", "#8db5ff", "🔋")},
 
-  function setDir(d) {
-    // prevent 180-degree turn
-    const [dx,dy] = d;
-    const [cdx,cdy] = state.dir;
-    if (dx === -cdx && dy === -cdy) return;
-    state.nextDir = d;
-  }
+      {cat:"Tools", name:"Multi-tool", desc:"Pliers + blade + driver in one.", tags:["utility","steel"], img: svgData("Multi-tool", "#8bd3a8", "🛠️")},
+      {cat:"Tools", name:"Paracord 550", desc:"Lash, tie, repair — a small coil goes far.", tags:["rope","repair"], img: svgData("Paracord", "#cbb48d", "🪢")},
+      {cat:"Tools", name:"Fire Starter Kit", desc:"Ferro rod + tinder. Works when wet.", tags:["fire","backup"], img: svgData("Fire", "#ffb86b", "🔥")},
 
-  function start() {
-    if (state.over) reset();
-    paused = false;
-    btn.textContent = 'Pause';
-    setStatus('Playing');
-    if (!raf) {
-      last = performance.now();
-      acc = 0;
-      raf = requestAnimationFrame(loop);
-    }
-  }
+      {cat:"Med", name:"Mini First Aid", desc:"Bandages, gauze, antiseptic wipes.", tags:["first-aid","compact"], img: svgData("First Aid", "#ff8b8b", "🩹")},
+      {cat:"Med", name:"Blister Care", desc:"Moleskin + tape for long walks.", tags:["feet","trail"], img: svgData("Blisters", "#ff8b8b", "👣")},
+      {cat:"Med", name:"Electrolyte Tabs", desc:"Helps on hot/humid days.", tags:["salts","heat"], img: svgData("Electrolyte", "#ff8b8b", "🧂")},
 
-  function togglePause() {
-    if (state.over) return;
-    paused = !paused;
-    btn.textContent = paused ? 'Resume' : 'Pause';
-    setStatus(paused ? 'Paused' : 'Playing');
-  }
+      {cat:"Clothing", name:"Rain Shell", desc:"Lightweight wind & rain protection.", tags:["rain","packable"], img: svgData("Shell", "#8db5ff", "🧥")},
+      {cat:"Clothing", name:"Trail Cap", desc:"Sun + sweat management.", tags:["sun","breathable"], img: svgData("Cap", "#8db5ff", "🧢")},
+      {cat:"Clothing", name:"Merino Socks", desc:"Warm, low-odor, great for hikes.", tags:["comfort","warm"], img: svgData("Socks", "#8db5ff", "🧦")},
+    ];
 
-  function gameOver() {
-    state.over = true;
-    paused = true;
-    btn.textContent = 'Restart';
-    setStatus('Game over');
-    // submit score to Firestore leaderboard
-    try { window.__snakebite_lb?.submitScore?.(state.score); } catch(e) {}
-    const best = loadBest();
-    if (state.score > best) {
-      saveBest(state.score);
-      bestEl.textContent = String(state.score);
-    }
-  }
+    const grid = document.getElementById('grid');
+    const chips = Array.from(document.querySelectorAll('.chip'));
 
-  function step() {
-    if (paused || state.over) return;
-
-    state.dir = state.nextDir;
-    const head = state.snake[0];
-    const nx = head.x + state.dir[0];
-    const ny = head.y + state.dir[1];
-
-    // wall collision
-    if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) {
-      gameOver();
-      return;
-    }
-
-    const newHead = {x:nx, y:ny};
-
-    // self collision (allow moving into the tail if it will move away)
-    const tail = state.snake[state.snake.length-1];
-    const willEat = (newHead.x === state.food.x && newHead.y === state.food.y);
-    for (let i=0; i<state.snake.length; i++) {
-      const p = state.snake[i];
-      const isTail = (p.x===tail.x && p.y===tail.y && i===state.snake.length-1);
-      if (p.x===newHead.x && p.y===newHead.y && !(isTail && !willEat)) {
-        gameOver();
-        return;
-      }
-    }
-
-    state.snake.unshift(newHead);
-
-    if (willEat) {
-      state.score += 10;
-      state.foods += 1;
-      scoreEl.textContent = String(state.score);
-
-      // speed up
-      if (state.foods % SPEEDUP_EVERY === 0) {
-        state.tickMs = Math.max(60, Math.floor(state.tickMs * SPEEDUP_FACTOR));
-      }
-
-      placeFood();
-    } else {
-      state.snake.pop();
-    }
-  }
-
-  function placeFood() {
-    const set = new Set(state.snake.map(p => p.x+','+p.y));
-    state.food = randCell(set);
-  }
-
-  function draw() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    // food
-    ctx.fillStyle = '#ff4d6d';
-    ctx.beginPath();
-    ctx.roundRect(state.food.x*CELL+6, state.food.y*CELL+6, CELL-12, CELL-12, 8);
-    ctx.fill();
-
-    // snake
-    for (let i=state.snake.length-1; i>=0; i--) {
-      const p = state.snake[i];
-      const isHead = i===0;
-      ctx.fillStyle = isHead ? '#6ee7ff' : '#63ff9b';
-      const pad = isHead ? 4 : 6;
-      ctx.beginPath();
-      ctx.roundRect(p.x*CELL+pad, p.y*CELL+pad, CELL-pad*2, CELL-pad*2, 10);
-      ctx.fill();
-    }
-
-    // overlay text
-    if (paused && !state.over) {
-      ctx.fillStyle = 'rgba(0,0,0,0.35)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = 'rgba(230,237,243,0.95)';
-      ctx.font = '600 28px system-ui, -apple-system, Segoe UI, Roboto';
-      ctx.textAlign = 'center';
-      ctx.fillText('Press Start', canvas.width/2, canvas.height/2 - 10);
-      ctx.font = '14px system-ui, -apple-system, Segoe UI, Roboto';
-      ctx.fillStyle = 'rgba(230,237,243,0.75)';
-      ctx.fillText('Arrow keys / WASD • Space pause • R restart', canvas.width/2, canvas.height/2 + 18);
-    }
-
-    if (state.over) {
-      ctx.fillStyle = 'rgba(0,0,0,0.45)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = 'rgba(230,237,243,0.95)';
-      ctx.font = '700 30px system-ui, -apple-system, Segoe UI, Roboto';
-      ctx.textAlign = 'center';
-      ctx.fillText('Game Over', canvas.width/2, canvas.height/2 - 12);
-      ctx.font = '14px system-ui, -apple-system, Segoe UI, Roboto';
-      ctx.fillStyle = 'rgba(230,237,243,0.8)';
-      ctx.fillText('Press R or click Restart', canvas.width/2, canvas.height/2 + 16);
-    }
-  }
-
-  function loop(t) {
-    raf = requestAnimationFrame(loop);
-    const dt = t - last;
-    last = t;
-    acc += dt;
-    while (acc >= state.tickMs) {
-      step();
-      acc -= state.tickMs;
-      if (state.over) break;
-    }
-    draw();
-  }
-
-  // input
-  window.addEventListener('keydown', (e) => {
-    if (e.code === 'Space') { e.preventDefault(); togglePause(); return; }
-    if (e.code === 'KeyR') { e.preventDefault(); reset(); start(); return; }
-    const d = keyDirs[e.code];
-    if (d) { e.preventDefault(); setDir(d); }
-  }, {passive:false});
-
-  btn.addEventListener('click', () => {
-    if (state.over) { reset(); start(); return; }
-    if (paused) start(); else togglePause();
-  });
-
-  // simple swipe controls
-  let touchStart = null;
-  canvas.addEventListener('touchstart', (e) => {
-    const t = e.touches[0];
-    touchStart = {x:t.clientX, y:t.clientY};
-  }, {passive:true});
-  canvas.addEventListener('touchend', (e) => {
-    if (!touchStart) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - touchStart.x;
-    const dy = t.clientY - touchStart.y;
-    touchStart = null;
-    if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
-    if (Math.abs(dx) > Math.abs(dy)) {
-      setDir(dx > 0 ? [1,0] : [-1,0]);
-    } else {
-      setDir(dy > 0 ? [0,1] : [0,-1]);
-    }
-    if (paused && !state.over) start();
-  }, {passive:true});
-
-
-
-  // on-screen buttons (mobile)
-  const dirMap = { up:[0,-1], down:[0,1], left:[-1,0], right:[1,0] };
-  const padButtons = document.querySelectorAll('.dpad .pad');
-  padButtons.forEach(b => {
-    const dir = b.getAttribute('data-dir');
-    const action = b.getAttribute('data-action');
-    const handler = (e) => {
-      e.preventDefault();
-      if (action === 'pause') { togglePause(); return; }
-      if (action === 'restart') { reset(); start(); return; }
-      if (dir && dirMap[dir]) {
-        setDir(dirMap[dir]);
-        if (paused && !state.over) start();
-      }
+    const counts = {
+      all: items.length,
+      Essentials: items.filter(i=>i.cat==="Essentials").length,
+      Tools: items.filter(i=>i.cat==="Tools").length,
+      Med: items.filter(i=>i.cat==="Med").length,
+      Clothing: items.filter(i=>i.cat==="Clothing").length,
     };
-    b.addEventListener('pointerdown', handler, {passive:false});
-    b.addEventListener('click', handler, {passive:false});
-  });
 
-  // init
-  reset();
-  draw();
-})();
-</script>
+    const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v); };
+    setText('count-all', counts.all);
+    setText('count-Essentials', counts.Essentials);
+    setText('count-Tools', counts.Tools);
+    setText('count-Med', counts.Med);
+    setText('count-Clothing', counts.Clothing);
+    setText('kpi-total', counts.all);
 
-<!-- Firebase (CDN) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    const cardHtml = (it) => {
+      const tags = it.tags.map(t => `<span class="tag">${t}</span>`).join('');
+      return `
+        <article class="card" data-cat="${it.cat}">
+          <div class="media"><img alt="${it.name}" src="${it.img}" loading="lazy"></div>
+          <div class="body">
+            <div class="top">
+              <h3>${it.name}</h3>
+              <span class="badge">${it.cat}</span>
+            </div>
+            <div class="muted">${it.desc}</div>
+            <div class="tags">${tags}</div>
+          </div>
+        </article>
+      `;
+    };
 
-<script>
-  // TODO: 貼上你 Firebase Console → Web App 的 firebaseConfig
-  // 例子：const firebaseConfig = { apiKey: '...', authDomain: '...', projectId: '...' }
-  const firebaseConfig = {
-    apiKey: "AIzaSyCabc1Y1PcWRBJa4M68iNsDKYKKJYsfqss",
-    authDomain: "snake-ad6ee.firebaseapp.com",
-    projectId: "snake-ad6ee",
-    storageBucket: "snake-ad6ee.firebasestorage.app",
-    messagingSenderId: "980134111718",
-    appId: "1:980134111718:web:c1c74fa8f13570375b4e27"
-  };
+    grid.innerHTML = items.map(cardHtml).join('');
 
-  const fbApp = firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  // Sign in anonymously for leaderboard writes
-  auth.signInAnonymously().catch((e) => {
-    console.warn('Anonymous auth failed:', e);
-  });
-
-  const lbList = document.getElementById('lbList');
-  const lbHint = document.getElementById('lbHint');
-
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',''':'&#39;'}[c]));
-  }
-
-  async function loadLeaderboard(){
-    if (!lbList) return;
-    lbList.innerHTML = '<li class="lb-muted">載入中…</li>';
-    try{
-      const snap = await db.collection('scores')
-        .orderBy('score','desc')
-        .orderBy('createdAt','asc')
-        .limit(10)
-        .get();
-
-      if (snap.empty){
-        lbList.innerHTML = '<li class="lb-muted">暫時未有人上榜</li>';
-        return;
-      }
-
-      const items = [];
-      snap.forEach(doc => {
-        const d = doc.data() || {};
-        items.push({name: d.name || '玩家', score: d.score ?? 0});
+    const applyFilter = (cat) => {
+      const cards = Array.from(document.querySelectorAll('.card'));
+      let showing = 0;
+      cards.forEach(c => {
+        const ok = (cat === 'all') || (c.dataset.cat === cat);
+        c.classList.toggle('hidden', !ok);
+        if (ok) showing++;
       });
+      setText('kpi-showing', showing);
+      setText('kpi-mode', cat === 'all' ? 'All' : cat);
+    };
 
-      lbList.innerHTML = items.map((it, idx) =>
-        `<li>#${idx+1} ${escapeHtml(it.name)} — <b>${it.score}</b></li>`
-      ).join('');
+    chips.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.cat;
+        chips.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+        applyFilter(cat);
+      });
+    });
 
-    } catch (e){
-      console.warn(e);
-      lbList.innerHTML = '<li class="lb-muted">載入失敗（可能未設定 Firebase config）</li>';
-    }
-  }
-
-  // Expose to game script
-  window.__snakebite_lb = {
-    loadLeaderboard,
-    async submitScore(score){
-      try{
-        await auth.onAuthStateChanged(async (u) => {
-          if (!u) return;
-          const key = 'snakebite_name';
-          let name = localStorage.getItem(key) || '';
-          if (!name){
-            name = prompt('輸入上榜名稱（1-20字）', 'Ryan') || '';
-            name = name.trim().slice(0,20);
-            if (!name) name = '玩家';
-            localStorage.setItem(key, name);
-          }
-          await db.collection('scores').add({
-            name,
-            score: Math.max(0, Math.floor(score)),
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            ua: navigator.userAgent.slice(0,120),
-          });
-          lbHint && (lbHint.textContent = '已提交分數 ✅');
-          setTimeout(() => { if (lbHint) lbHint.textContent = '完成一局後會自動提交分數（匿名）'; }, 1500);
-          await loadLeaderboard();
-        });
-      } catch (e){
-        console.warn('submitScore failed', e);
-        lbHint && (lbHint.textContent = '提交失敗（請檢查 Firebase 設定）');
-      }
-    }
-  };
-
-  // Initial load
-  loadLeaderboard();
-</script>
+    applyFilter('all');
+  </script>
 </body>
 </html>
