@@ -23,5 +23,6 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          # Use explicit project id (avoid relying on .firebaserc)
-          firebase deploy --project snake-ad6ee --only hosting,firestore:rules
+          # Deploy hosting to the named site + apply Firestore rules
+          firebase deploy --project snake-ad6ee --only hosting --site snake-ad6ee
+          firebase deploy --project snake-ad6ee --only firestore:rules

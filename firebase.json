@@ -1,9 +1,12 @@
 {
   "hosting": {
+    "site": "snake-ad6ee",
     "public": ".",
     "ignore": [
       "firebase.json",
       ".firebaserc",
+      "firestore.rules",
+      "firestore.indexes.json",
       "**/.*",
       "**/node_modules/**"
     ],
