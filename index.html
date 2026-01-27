@@ -95,6 +95,19 @@
       .dpad { display: grid; }
     }
 
+    .leaderboard{
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      border-radius: 12px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .lb-title{font-weight:800; font-size:12px; letter-spacing:.2px; color:rgba(230,237,243,.85)}
+    .lb-list{margin:0; padding-left: 18px; color:rgba(230,237,243,.9)}
+    .lb-list li{margin:4px 0; font-size:12px}
+    .lb-muted{color:rgba(230,237,243,.65); font-size:12px}
+
     .footer {
       display:flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
       font-size: 12px; color: rgba(230,237,243,0.65);
@@ -136,6 +149,12 @@
       </div>
     </div>
 </div>
+
+    <div class="leaderboard" id="leaderboard">
+      <div class="lb-title">Top 10 排行榜</div>
+      <ol class="lb-list" id="lbList"><li class="lb-muted">載入中…</li></ol>
+      <div class="lb-muted" id="lbHint">完成一局後會自動提交分數（匿名）</div>
+    </div>
 
     <div class="footer">
       <div>GitHub Pages demo • No dependencies</div>
@@ -240,6 +259,8 @@
     paused = true;
     btn.textContent = 'Restart';
     setStatus('Game over');
+    // submit score to Firestore leaderboard
+    try { window.__snakebite_lb?.submitScore?.(state.score); } catch(e) {}
     const best = loadBest();
     if (state.score > best) {
       saveBest(state.score);
@@ -416,6 +437,104 @@
   reset();
   draw();
 })();
+</script>
+
+<!-- Firebase (CDN) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // TODO: 貼上你 Firebase Console → Web App 的 firebaseConfig
+  // 例子：const firebaseConfig = { apiKey: '...', authDomain: '...', projectId: '...' }
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    appId: "YOUR_APP_ID",
+  };
+
+  const fbApp = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // Sign in anonymously for leaderboard writes
+  auth.signInAnonymously().catch((e) => {
+    console.warn('Anonymous auth failed:', e);
+  });
+
+  const lbList = document.getElementById('lbList');
+  const lbHint = document.getElementById('lbHint');
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',''':'&#39;'}[c]));
+  }
+
+  async function loadLeaderboard(){
+    if (!lbList) return;
+    lbList.innerHTML = '<li class="lb-muted">載入中…</li>';
+    try{
+      const snap = await db.collection('scores')
+        .orderBy('score','desc')
+        .orderBy('createdAt','asc')
+        .limit(10)
+        .get();
+
+      if (snap.empty){
+        lbList.innerHTML = '<li class="lb-muted">暫時未有人上榜</li>';
+        return;
+      }
+
+      const items = [];
+      snap.forEach(doc => {
+        const d = doc.data() || {};
+        items.push({name: d.name || '玩家', score: d.score ?? 0});
+      });
+
+      lbList.innerHTML = items.map((it, idx) =>
+        `<li>#${idx+1} ${escapeHtml(it.name)} — <b>${it.score}</b></li>`
+      ).join('');
+
+    } catch (e){
+      console.warn(e);
+      lbList.innerHTML = '<li class="lb-muted">載入失敗（可能未設定 Firebase config）</li>';
+    }
+  }
+
+  // Expose to game script
+  window.__snakebite_lb = {
+    loadLeaderboard,
+    async submitScore(score){
+      try{
+        await auth.onAuthStateChanged(async (u) => {
+          if (!u) return;
+          const key = 'snakebite_name';
+          let name = localStorage.getItem(key) || '';
+          if (!name){
+            name = prompt('輸入上榜名稱（1-20字）', 'Ryan') || '';
+            name = name.trim().slice(0,20);
+            if (!name) name = '玩家';
+            localStorage.setItem(key, name);
+          }
+          await db.collection('scores').add({
+            name,
+            score: Math.max(0, Math.floor(score)),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            ua: navigator.userAgent.slice(0,120),
+          });
+          lbHint && (lbHint.textContent = '已提交分數 ✅');
+          setTimeout(() => { if (lbHint) lbHint.textContent = '完成一局後會自動提交分數（匿名）'; }, 1500);
+          await loadLeaderboard();
+        });
+      } catch (e){
+        console.warn('submitScore failed', e);
+        lbHint && (lbHint.textContent = '提交失敗（請檢查 Firebase 設定）');
+      }
+    }
+  };
+
+  // Initial load
+  loadLeaderboard();
 </script>
 </body>
 </html>
