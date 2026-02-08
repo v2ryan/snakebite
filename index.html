@@ -1,504 +1,1123 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+
+<html lang="zh-HK">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>snakebite — gear</title>
-  <meta name="description" content="Outdoor/tactical gear page with filters." />
-  <style>
-    :root{
-      --bg0:#0b0f0b;
-      --bg1:#101712;
-      --panel:#0f1712;
-      --panel2:#0c140f;
-      --ink:#e9f0e6;
-      --muted:rgba(233,240,230,.74);
-      --muted2:rgba(233,240,230,.56);
-      --line:rgba(233,240,230,.10);
-      --line2:rgba(233,240,230,.16);
-      --olive:#5c7a45;
-      --moss:#2f5a3d;
-      --tan:#cbb48d;
-      --accent:#8bd3a8;
-      --danger:#ff6b6b;
-      --shadow: 0 18px 40px rgba(0,0,0,.45);
-      --radius: 16px;
-      color-scheme: dark;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlashForge — NotebookLM CSV → 閃卡 & PDF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root {
+  --ink: #1a1a2e;
+  --ink-50: rgba(26,26,46,0.5);
+  --ink-20: rgba(26,26,46,0.2);
+  --ink-08: rgba(26,26,46,0.08);
+  --ink-04: rgba(26,26,46,0.04);
+  --paper: #faf9f6;
+  --paper-warm: #f5f0e8;
+  --white: #ffffff;
+  --accent: #e85d26;
+  --accent-light: #fff0eb;
+  --accent-dark: #c44a1a;
+  --mint: #2a9d8f;
+  --mint-light: #e8f6f4;
+  --blue: #457b9d;
+  --blue-light: #eaf2f7;
+  --gold: #e9c46a;
+  --gold-light: #fdf8eb;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 3px rgba(26,26,46,0.06);
+  --shadow-md: 0 4px 16px rgba(26,26,46,0.08);
+  --shadow-lg: 0 8px 32px rgba(26,26,46,0.12);
+  --shadow-xl: 0 16px 48px rgba(26,26,46,0.16);
+  --font-body: 'DM Sans', 'Noto Sans TC', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
 
-    *{box-sizing:border-box}
+- { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      color: var(--ink);
-      background:
-        radial-gradient(1200px 800px at 70% 10%, rgba(140,211,168,.10) 0%, transparent 60%),
-        radial-gradient(900px 700px at 10% 30%, rgba(203,180,141,.10) 0%, transparent 62%),
-        linear-gradient(180deg, var(--bg1), var(--bg0));
-      min-height:100vh;
-    }
+body {
+font-family: var(–font-body);
+background: var(–paper);
+color: var(–ink);
+line-height: 1.6;
+min-height: 100vh;
+-webkit-font-smoothing: antialiased;
+}
 
-    /* Topo-map texture (offline, SVG data URI) */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.35;
-      mix-blend-mode:screen;
-      background-image:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'><rect width='520' height='520' fill='none'/><g fill='none' stroke='%23a7c4a7' stroke-opacity='.18' stroke-width='1.4'><path d='M30 120 C140 40, 220 70, 310 110 S470 190, 490 80'/><path d='M40 180 C160 120, 250 150, 330 170 S470 250, 510 150'/><path d='M20 260 C120 210, 230 230, 320 260 S470 330, 520 250'/><path d='M10 320 C110 290, 250 300, 340 330 S480 420, 520 350'/><path d='M60 420 C160 370, 240 390, 330 420 S460 480, 520 440'/><path d='M120 40 C140 120, 120 190, 80 240 S40 360, 120 500'/><path d='M210 20 C250 120, 230 210, 190 270 S170 390, 250 520'/><path d='M320 20 C360 120, 340 230, 310 290 S300 410, 360 520'/><path d='M430 20 C470 120, 450 220, 420 280 S410 410, 470 520'/></g><g opacity='.18'><circle cx='95' cy='95' r='2' fill='%23cbb48d'/><circle cx='420' cy='180' r='2' fill='%23cbb48d'/><circle cx='250' cy='410' r='2' fill='%23cbb48d'/></g></svg>");
-      filter: blur(.2px);
-    }
+/* ========== HEADER ========== */
+header {
+background: var(–ink);
+color: var(–paper);
+padding: 0;
+position: sticky;
+top: 0;
+z-index: 100;
+box-shadow: var(–shadow-lg);
+}
 
-    .container{
-      width:min(1060px, 92vw);
-      margin: 0 auto;
-      padding: 28px 0 56px;
-    }
+.header-inner {
+max-width: 1200px;
+margin: 0 auto;
+padding: 16px 24px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 16px;
+}
 
-    header{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:16px;
-      padding: 18px 20px;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(15,23,18,.72), rgba(8,12,9,.55));
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 14px;
-      backdrop-filter: blur(10px);
-      z-index: 5;
-    }
+.logo {
+display: flex;
+align-items: center;
+gap: 12px;
+}
 
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      min-width: 210px;
-    }
+.logo-icon {
+width: 40px;
+height: 40px;
+background: var(–accent);
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 20px;
+transform: rotate(-3deg);
+flex-shrink: 0;
+}
 
-    .brand h1{
-      margin:0;
-      font-size: 18px;
-      letter-spacing: .6px;
-      text-transform: uppercase;
-    }
+.logo h1 {
+font-size: 20px;
+font-weight: 700;
+letter-spacing: -0.5px;
+}
 
-    .brand .sub{
-      margin:0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.2;
-    }
+.logo h1 span {
+color: var(–accent);
+}
 
-    .nav{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+.header-tag {
+font-size: 11px;
+font-family: var(–font-mono);
+background: rgba(255,255,255,0.1);
+padding: 4px 10px;
+border-radius: 20px;
+color: rgba(255,255,255,0.6);
+}
 
-    .chip{
-      border:1px solid var(--line2);
-      background: rgba(255,255,255,.06);
-      color: var(--ink);
-      padding: 9px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      line-height: 1;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      user-select:none;
-    }
+/* ========== MAIN ========== */
+main {
+max-width: 1200px;
+margin: 0 auto;
+padding: 32px 24px 80px;
+}
 
-    .chip[aria-pressed="true"]{
-      border-color: rgba(139,211,168,.45);
-      background: rgba(139,211,168,.12);
-    }
+/* ========== UPLOAD ZONE ========== */
+.upload-section {
+margin-bottom: 32px;
+}
 
-    .chip .count{
-      font-variant-numeric: tabular-nums;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.22);
-      border: 1px solid var(--line);
-      color: var(--muted);
-    }
+.upload-zone {
+border: 2px dashed var(–ink-20);
+border-radius: var(–radius-lg);
+padding: 48px 32px;
+text-align: center;
+cursor: pointer;
+transition: all 0.3s ease;
+background: var(–white);
+position: relative;
+overflow: hidden;
+}
 
-    .chip .dot{
-      width:8px;height:8px;border-radius:99px;
-      background: var(--tan);
-      box-shadow: 0 0 0 2px rgba(0,0,0,.35);
-    }
+.upload-zone::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: repeating-linear-gradient(
+-45deg,
+transparent,
+transparent 8px,
+var(–ink-04) 8px,
+var(–ink-04) 9px
+);
+opacity: 0;
+transition: opacity 0.3s;
+}
 
-    .chip[data-cat="all"] .dot{ background: var(--accent); }
-    .chip[data-cat="Essentials"] .dot{ background: #cbb48d; }
-    .chip[data-cat="Tools"] .dot{ background: #8bd3a8; }
-    .chip[data-cat="Med"] .dot{ background: #ff8b8b; }
-    .chip[data-cat="Clothing"] .dot{ background: #8db5ff; }
+.upload-zone:hover,
+.upload-zone.dragover {
+border-color: var(–accent);
+background: var(–accent-light);
+transform: scale(1.005);
+}
 
-    .hero{
-      margin-top: 18px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 14px;
-      align-items: stretch;
-    }
+.upload-zone:hover::before,
+.upload-zone.dragover::before {
+opacity: 1;
+}
 
-    .panel{
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(16,23,18,.72), rgba(10,14,10,.55));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
+.upload-zone.has-file {
+border-style: solid;
+border-color: var(–mint);
+background: var(–mint-light);
+padding: 24px 32px;
+}
 
-    .panel .inner{ padding: 16px 16px 14px; }
+.upload-icon {
+font-size: 48px;
+margin-bottom: 16px;
+display: block;
+position: relative;
+z-index: 1;
+}
 
-    .titleRow{
-      display:flex; align-items:baseline; justify-content:space-between; gap:12px;
-    }
+.upload-zone h2 {
+font-size: 18px;
+font-weight: 700;
+margin-bottom: 8px;
+position: relative;
+z-index: 1;
+}
 
-    h2{
-      margin:0;
-      font-size: 14px;
-      letter-spacing: .3px;
-      text-transform: uppercase;
-      color: rgba(233,240,230,.92);
-    }
+.upload-zone p {
+color: var(–ink-50);
+font-size: 14px;
+position: relative;
+z-index: 1;
+}
 
-    .muted{ color: var(--muted); font-size: 12px; line-height: 1.45; }
+.upload-zone input[type=“file”] {
+display: none;
+}
 
-    .kpi{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;
-    }
-    .kpi .pill{
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.18);
-      padding: 8px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      color: var(--muted);
-      display:flex;
-      gap:8px;
-      align-items:center;
-      white-space:nowrap;
-    }
-    .kpi strong{ color: var(--ink); font-weight: 750; }
+.file-info {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+position: relative;
+z-index: 1;
+}
 
-    .link{
-      color: rgba(139,211,168,.95);
-      text-decoration:none;
-      border-bottom: 1px dashed rgba(139,211,168,.35);
-    }
-    .link:hover{ border-bottom-style: solid; }
+.file-info .file-name {
+font-weight: 600;
+font-family: var(–font-mono);
+font-size: 14px;
+}
 
-    .grid{
-      margin-top: 14px;
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
+.file-info .file-stats {
+color: var(–ink-50);
+font-size: 13px;
+}
 
-    .card{
-      border: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, rgba(10,14,10,.45), rgba(0,0,0,.12)),
-        radial-gradient(600px 140px at 50% 0%, rgba(203,180,141,.10), transparent 55%);
-      border-radius: 14px;
-      overflow:hidden;
-      transition: transform .12s ease, border-color .12s ease;
-      position: relative;
-    }
+.btn-remove {
+background: none;
+border: 1px solid var(–ink-20);
+border-radius: 8px;
+padding: 4px 12px;
+font-size: 12px;
+cursor: pointer;
+color: var(–ink-50);
+transition: all 0.2s;
+}
 
-    .card:hover{ transform: translateY(-2px); border-color: rgba(233,240,230,.18); }
+.btn-remove:hover {
+background: #fee;
+border-color: #e55;
+color: #c33;
+}
 
-    .card .media{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 12px;
-      background:
-        linear-gradient(90deg, rgba(139,211,168,.06), transparent 40%),
-        linear-gradient(180deg, rgba(255,255,255,.04), transparent 60%);
-      border-bottom: 1px solid var(--line);
-    }
+/* ========== COLUMN MAPPING ========== */
+.mapping-section {
+background: var(–white);
+border-radius: var(–radius-lg);
+padding: 24px;
+margin-bottom: 32px;
+box-shadow: var(–shadow-sm);
+display: none;
+}
 
-    .card img{
-      width: 100%;
-      height: 110px;
-      object-fit: contain;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,.45));
-    }
+.mapping-section.active { display: block; }
 
-    .card .body{ padding: 12px; display:grid; gap: 8px; }
+.mapping-section h3 {
+font-size: 16px;
+font-weight: 700;
+margin-bottom: 16px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
 
-    .card .top{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
+.mapping-row {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 16px;
+margin-bottom: 16px;
+}
 
-    .card h3{ margin:0; font-size: 14px; letter-spacing:.2px; }
+@media (max-width: 640px) {
+.mapping-row { grid-template-columns: 1fr; }
+}
 
-    .badge{
-      font-size: 11px;
-      border: 1px solid var(--line2);
-      color: var(--muted);
-      padding: 5px 8px;
-      border-radius: 999px;
-      white-space: nowrap;
-      background: rgba(0,0,0,.18);
-    }
+.mapping-group label {
+display: block;
+font-size: 12px;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: var(–ink-50);
+margin-bottom: 6px;
+}
 
-    .tags{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-    }
+.mapping-group select {
+width: 100%;
+padding: 10px 14px;
+border: 1px solid var(–ink-20);
+border-radius: var(–radius);
+font-family: var(–font-body);
+font-size: 14px;
+background: var(–paper);
+cursor: pointer;
+transition: border-color 0.2s;
+appearance: auto;
+}
 
-    .tag{
-      font-size: 11px;
-      color: rgba(233,240,230,.72);
-      border: 1px solid rgba(233,240,230,.12);
-      background: rgba(0,0,0,.18);
-      padding: 4px 8px;
-      border-radius: 999px;
-    }
+.mapping-group select:focus {
+outline: none;
+border-color: var(–accent);
+}
 
-    .hidden{ display:none !important; }
+/* ========== TOOLBAR ========== */
+.toolbar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 24px;
+display: none;
+}
 
-    .footer{
-      margin-top: 14px;
-      display:flex;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      color: var(--muted2);
-      font-size: 12px;
-    }
+.toolbar.active { display: flex; }
 
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: repeat(2, 1fr); }
-      .hero{ grid-template-columns: 1fr; }
-    }
+.toolbar-left {
+display: flex;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+}
 
-    @media (max-width: 560px){
-      header{ align-items:flex-start; }
-      .grid{ grid-template-columns: 1fr; }
-      .brand{ min-width: auto; }
-    }
+.toolbar-right {
+display: flex;
+align-items: center;
+gap: 8px;
+}
 
-    /* Rugged corner mark */
-    .card::after{
-      content:"";
-      position:absolute;
-      top: 10px;
-      right: 10px;
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      border: 1px dashed rgba(233,240,230,.18);
-      transform: rotate(7deg);
-      opacity: .55;
-    }
+.btn {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 10px 18px;
+border: none;
+border-radius: var(–radius);
+font-family: var(–font-body);
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+white-space: nowrap;
+}
 
-    /* Subtle grit */
-    .panel::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:.08;
-      background-image:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.5) 0 1px, transparent 2px),
-        radial-gradient(circle at 70% 40%, rgba(255,255,255,.4) 0 1px, transparent 2px),
-        radial-gradient(circle at 40% 80%, rgba(255,255,255,.35) 0 1px, transparent 2px);
-      background-size: 90px 90px, 120px 120px, 140px 140px;
-      mix-blend-mode: overlay;
-    }
-    .panel{ position:relative; }
+.btn-primary {
+background: var(–accent);
+color: white;
+}
 
-  </style>
+.btn-primary:hover {
+background: var(–accent-dark);
+transform: translateY(-1px);
+box-shadow: var(–shadow-md);
+}
+
+.btn-secondary {
+background: var(–white);
+color: var(–ink);
+border: 1px solid var(–ink-20);
+}
+
+.btn-secondary:hover {
+background: var(–paper);
+border-color: var(–ink-50);
+}
+
+.btn-secondary.active {
+background: var(–ink);
+color: var(–paper);
+border-color: var(–ink);
+}
+
+.btn-mint {
+background: var(–mint);
+color: white;
+}
+
+.btn-mint:hover {
+background: #238b7f;
+transform: translateY(-1px);
+box-shadow: var(–shadow-md);
+}
+
+.layout-btns {
+display: flex;
+border: 1px solid var(–ink-20);
+border-radius: var(–radius);
+overflow: hidden;
+}
+
+.layout-btns .btn-layout {
+padding: 8px 14px;
+border: none;
+background: var(–white);
+cursor: pointer;
+font-size: 13px;
+font-weight: 600;
+font-family: var(–font-body);
+color: var(–ink-50);
+transition: all 0.2s;
+}
+
+.layout-btns .btn-layout + .btn-layout {
+border-left: 1px solid var(–ink-20);
+}
+
+.layout-btns .btn-layout.active {
+background: var(–ink);
+color: var(–paper);
+}
+
+.card-size-select {
+padding: 8px 12px;
+border: 1px solid var(–ink-20);
+border-radius: var(–radius);
+font-family: var(–font-body);
+font-size: 13px;
+background: var(–white);
+cursor: pointer;
+}
+
+/* ========== FLASHCARD GRID ========== */
+.cards-container {
+display: none;
+}
+
+.cards-container.active { display: block; }
+
+.cards-grid {
+display: grid;
+gap: 20px;
+}
+
+.cards-grid.layout-2 { grid-template-columns: repeat(2, 1fr); }
+.cards-grid.layout-3 { grid-template-columns: repeat(3, 1fr); }
+.cards-grid.layout-4 { grid-template-columns: repeat(4, 1fr); }
+.cards-grid.layout-list { grid-template-columns: 1fr; }
+
+@media (max-width: 900px) {
+.cards-grid.layout-3,
+.cards-grid.layout-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+.cards-grid.layout-2,
+.cards-grid.layout-3,
+.cards-grid.layout-4 { grid-template-columns: 1fr; }
+}
+
+/* ========== FLASHCARD ========== */
+.flashcard {
+background: var(–white);
+border-radius: var(–radius);
+box-shadow: var(–shadow-sm);
+overflow: hidden;
+transition: all 0.25s ease;
+border: 1px solid var(–ink-08);
+position: relative;
+}
+
+.flashcard:hover {
+box-shadow: var(–shadow-md);
+transform: translateY(-2px);
+}
+
+.flashcard-num {
+position: absolute;
+top: 10px;
+right: 12px;
+font-size: 11px;
+font-family: var(–font-mono);
+color: var(–ink-20);
+font-weight: 500;
+}
+
+.flashcard-front {
+padding: 20px 20px 16px;
+border-bottom: 2px dashed var(–ink-08);
+min-height: 80px;
+position: relative;
+}
+
+.flashcard-front::before {
+content: ‘Q’;
+position: absolute;
+top: 10px;
+left: 12px;
+font-size: 11px;
+font-weight: 700;
+color: var(–accent);
+font-family: var(–font-mono);
+background: var(–accent-light);
+width: 22px;
+height: 22px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 6px;
+}
+
+.flashcard-front .content {
+padding-left: 28px;
+font-weight: 600;
+font-size: 14px;
+line-height: 1.6;
+}
+
+.flashcard-back {
+padding: 16px 20px 20px;
+background: var(–ink-04);
+min-height: 80px;
+position: relative;
+}
+
+.flashcard-back::before {
+content: ‘A’;
+position: absolute;
+top: 12px;
+left: 12px;
+font-size: 11px;
+font-weight: 700;
+color: var(–mint);
+font-family: var(–font-mono);
+background: var(–mint-light);
+width: 22px;
+height: 22px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 6px;
+}
+
+.flashcard-back .content {
+padding-left: 28px;
+font-size: 13px;
+line-height: 1.7;
+color: var(–ink-50);
+}
+
+.flashcard-tag {
+margin-top: 10px;
+padding-left: 28px;
+}
+
+.flashcard-tag span {
+display: inline-block;
+font-size: 11px;
+font-family: var(–font-mono);
+background: var(–blue-light);
+color: var(–blue);
+padding: 2px 8px;
+border-radius: 4px;
+font-weight: 500;
+}
+
+/* ========== LIST VIEW ========== */
+.layout-list .flashcard {
+display: grid;
+grid-template-columns: 1fr 1fr;
+}
+
+.layout-list .flashcard-front {
+border-bottom: none;
+border-right: 2px dashed var(–ink-08);
+}
+
+@media (max-width: 600px) {
+.layout-list .flashcard {
+grid-template-columns: 1fr;
+}
+.layout-list .flashcard-front {
+border-right: none;
+border-bottom: 2px dashed var(–ink-08);
+}
+}
+
+/* ========== STATS BAR ========== */
+.stats-bar {
+display: flex;
+gap: 24px;
+margin-bottom: 24px;
+padding: 16px 20px;
+background: var(–white);
+border-radius: var(–radius);
+box-shadow: var(–shadow-sm);
+display: none;
+}
+
+.stats-bar.active { display: flex; }
+
+.stat-item {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.stat-num {
+font-size: 24px;
+font-weight: 700;
+font-family: var(–font-mono);
+color: var(–accent);
+}
+
+.stat-label {
+font-size: 12px;
+color: var(–ink-50);
+font-weight: 500;
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+text-align: center;
+padding: 80px 24px;
+color: var(–ink-50);
+}
+
+.empty-state .icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+.empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(–ink); }
+.empty-state p { font-size: 14px; max-width: 400px; margin: 0 auto; }
+
+/* ========== SAMPLE DATA ========== */
+.sample-section {
+margin-top: 24px;
+padding: 20px;
+background: var(–gold-light);
+border-radius: var(–radius);
+border: 1px solid var(–gold);
+}
+
+.sample-section h4 {
+font-size: 14px;
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.sample-section p {
+font-size: 13px;
+color: var(–ink-50);
+margin-bottom: 12px;
+}
+
+.sample-section pre {
+background: var(–white);
+padding: 12px 16px;
+border-radius: 8px;
+font-family: var(–font-mono);
+font-size: 12px;
+line-height: 1.8;
+overflow-x: auto;
+border: 1px solid var(–ink-08);
+margin-bottom: 12px;
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+@page {
+size: A4;
+margin: 12mm;
+}
+
+body {
+background: white !important;
+-webkit-print-color-adjust: exact;
+print-color-adjust: exact;
+}
+
+header, .upload-section, .mapping-section,
+.toolbar, .stats-bar, .sample-section,
+.btn-remove, .no-print {
+display: none !important;
+}
+
+main {
+padding: 0 !important;
+max-width: 100% !important;
+}
+
+.cards-container { display: block !important; }
+
+.cards-grid {
+gap: 8px !important;
+}
+
+.cards-grid.layout-2 { grid-template-columns: repeat(2, 1fr) !important; }
+.cards-grid.layout-3 { grid-template-columns: repeat(3, 1fr) !important; }
+.cards-grid.layout-4 { grid-template-columns: repeat(4, 1fr) !important; }
+.cards-grid.layout-list { grid-template-columns: 1fr !important; }
+
+.flashcard {
+break-inside: avoid;
+page-break-inside: avoid;
+box-shadow: none !important;
+border: 1px solid #ccc !important;
+transform: none !important;
+}
+
+.flashcard:hover {
+box-shadow: none !important;
+transform: none !important;
+}
+
+.flashcard-front { min-height: auto; padding: 12px 14px 10px; }
+.flashcard-back { min-height: auto; padding: 10px 14px 12px; }
+.flashcard-front .content, .flashcard-back .content { font-size: 12px; }
+.flashcard-front::before, .flashcard-back::before { font-size: 9px; width: 18px; height: 18px; }
+.flashcard-num { font-size: 9px; }
+
+.print-header {
+display: block !important;
+text-align: center;
+padding: 8px 0 16px;
+border-bottom: 2px solid #333;
+margin-bottom: 16px;
+}
+
+.print-header h2 { font-size: 16px; }
+.print-header p { font-size: 11px; color: #666; }
+}
+
+.print-header { display: none; }
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+from { opacity: 0; transform: translateY(12px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.flashcard {
+animation: fadeInUp 0.3s ease both;
+}
+
+.flashcard:nth-child(2) { animation-delay: 0.03s; }
+.flashcard:nth-child(3) { animation-delay: 0.06s; }
+.flashcard:nth-child(4) { animation-delay: 0.09s; }
+.flashcard:nth-child(5) { animation-delay: 0.12s; }
+.flashcard:nth-child(6) { animation-delay: 0.15s; }
+
+/* ========== FOOTER ========== */
+footer {
+text-align: center;
+padding: 24px;
+color: var(–ink-20);
+font-size: 12px;
+font-family: var(–font-mono);
+}
+</style>
+
 </head>
 <body>
-  <main class="container">
-    <header>
-      <div class="brand">
-        <h1>snakebite</h1>
-        <p class="sub">Field kit • Outdoor / tactical • Offline-friendly placeholders</p>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🃏</div>
+      <h1>Flash<span>Forge</span></h1>
+    </div>
+    <div class="header-tag">NotebookLM CSV → 閃卡 & PDF</div>
+  </div>
+</header>
+
+<main>
+  <!-- Upload -->
+  <div class="upload-section">
+    <div class="upload-zone" id="uploadZone">
+      <span class="upload-icon">📄</span>
+      <h2>拖放 CSV 檔案到此處</h2>
+      <p>或點擊此處選擇檔案 — 支援 NotebookLM 匯出嘅 CSV 格式</p>
+      <input type="file" id="fileInput" accept=".csv,.tsv,.txt">
+    </div>
+
+```
+<div class="sample-section no-print">
+  <h4>💡 支援嘅 CSV 格式</h4>
+  <p>系統會自動偵測欄位名稱，以下係常見格式：</p>
+  <pre>Front,Back
+```
+
+什麼是光合作用？,植物利用陽光、水和二氧化碳製造養分的過程
+What is photosynthesis?,The process by which plants convert sunlight into energy</pre>
+<p>亦支援：<code>Question/Answer</code>、<code>Term/Definition</code>、<code>題目/答案</code>、<code>問題/解答</code> 等欄位名</p>
+<button class="btn btn-secondary" onclick="loadSampleData()">📋 載入示範資料試試</button>
+</div>
+
+  </div>
+
+  <!-- Column Mapping -->
+
+  <div class="mapping-section" id="mappingSection">
+    <h3>🔗 欄位對應</h3>
+    <div class="mapping-row">
+      <div class="mapping-group">
+        <label>正面 (問題)</label>
+        <select id="mapFront"></select>
       </div>
-
-      <nav class="nav" aria-label="Filters">
-        <button class="chip" data-cat="all" aria-pressed="true"><span class="dot"></span>All <span class="count" id="count-all">0</span></button>
-        <button class="chip" data-cat="Essentials" aria-pressed="false"><span class="dot"></span>Essentials <span class="count" id="count-Essentials">0</span></button>
-        <button class="chip" data-cat="Tools" aria-pressed="false"><span class="dot"></span>Tools <span class="count" id="count-Tools">0</span></button>
-        <button class="chip" data-cat="Med" aria-pressed="false"><span class="dot"></span>Med <span class="count" id="count-Med">0</span></button>
-        <button class="chip" data-cat="Clothing" aria-pressed="false"><span class="dot"></span>Clothing <span class="count" id="count-Clothing">0</span></button>
-      </nav>
-    </header>
-
-    <section class="hero" aria-label="Overview">
-      <div class="panel">
-        <div class="inner">
-          <div class="titleRow">
-            <h2>Gear Loadout</h2>
-            <div class="muted"><a class="link" href="./game.html">Play Snake</a> • <a class="link" href="https://github.com/v2ryan/snakebite" target="_blank" rel="noreferrer">Source</a></div>
-          </div>
-          <p class="muted">A simple gear list page (A+B+D): card grid + topo vibe + category filters. Everything is static and works offline (images are inline SVG).</p>
-          <div class="kpi" aria-label="Stats">
-            <div class="pill">Items: <strong id="kpi-total">0</strong></div>
-            <div class="pill">Showing: <strong id="kpi-showing">0</strong></div>
-            <div class="pill">Mode: <strong id="kpi-mode">All</strong></div>
-          </div>
-        </div>
+      <div class="mapping-group">
+        <label>背面 (答案)</label>
+        <select id="mapBack"></select>
       </div>
-
-      <aside class="panel" aria-label="Notes">
-        <div class="inner">
-          <div class="titleRow">
-            <h2>Notes</h2>
-            <div class="muted">v1</div>
-          </div>
-          <p class="muted">
-            Tips: keep it light, keep it dry, and label everything. This page is a template — replace items with your real kit photos later.
-          </p>
-          <p class="muted">
-            Want a separate page? You can rename this to <code>gear.html</code> and make <code>index.html</code> redirect.
-          </p>
-        </div>
-      </aside>
-    </section>
-
-    <section class="panel" style="margin-top:14px" aria-label="Gear grid">
-      <div class="inner">
-        <div class="titleRow">
-          <h2>Inventory</h2>
-          <div class="muted" id="hint">Tap a filter to narrow down.</div>
-        </div>
-        <div class="grid" id="grid" aria-live="polite"></div>
-        <div class="footer">
-          <div>Outdoor palette • topo texture • rugged cards</div>
-          <div>Filters are instant (small JS)</div>
-        </div>
+      <div class="mapping-group">
+        <label>分類標籤 (選填)</label>
+        <select id="mapTag"></select>
       </div>
-    </section>
-  </main>
+    </div>
+    <button class="btn btn-primary" onclick="applyMapping()">✅ 確認並生成閃卡</button>
+  </div>
 
-  <script>
-    const svgData = (title, accent, glyph) => {
-      // A small “label” style illustration (offline)
-      const svg = `<?xml version="1.0" encoding="UTF-8"?>
-      <svg xmlns="http://www.w3.org/2000/svg" width="560" height="280" viewBox="0 0 560 280">
-        <defs>
-          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#0e1611"/>
-            <stop offset="1" stop-color="#0a100c"/>
-          </linearGradient>
-          <pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M0 20 H40" stroke="#ffffff" stroke-opacity=".06"/>
-            <path d="M20 0 V40" stroke="#ffffff" stroke-opacity=".06"/>
-          </pattern>
-        </defs>
-        <rect x="0" y="0" width="560" height="280" rx="22" fill="url(#g)"/>
-        <rect x="14" y="14" width="532" height="252" rx="18" fill="url(#p)" opacity=".55"/>
-        <rect x="24" y="24" width="512" height="232" rx="16" fill="none" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/>
+  <!-- Toolbar -->
 
-        <circle cx="86" cy="90" r="44" fill="${accent}" fill-opacity=".22" stroke="#ffffff" stroke-opacity=".18"/>
-        <path d="M62 90 h48" stroke="#ffffff" stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
-        <path d="M86 66 v48" stroke="#ffffff" stroke-opacity=".40" stroke-width="6" stroke-linecap="round"/>
+  <div class="toolbar" id="toolbar">
+    <div class="toolbar-left">
+      <div class="layout-btns">
+        <button class="btn-layout active" data-cols="2" onclick="setLayout(2, this)">2 欄</button>
+        <button class="btn-layout" data-cols="3" onclick="setLayout(3, this)">3 欄</button>
+        <button class="btn-layout" data-cols="4" onclick="setLayout(4, this)">4 欄</button>
+        <button class="btn-layout" data-cols="list" onclick="setLayout('list', this)">列表</button>
+      </div>
+      <select class="card-size-select" id="fontSizeSelect" onchange="setFontSize(this.value)">
+        <option value="small">字體：小</option>
+        <option value="medium" selected>字體：中</option>
+        <option value="large">字體：大</option>
+      </select>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn btn-secondary" onclick="toggleAnswers()">👁 顯示/隱藏答案</button>
+      <button class="btn btn-mint" onclick="window.print()">🖨 列印 / 儲存 PDF</button>
+    </div>
+  </div>
 
-        <text x="150" y="102" font-family="ui-sans-serif, system-ui" font-size="26" fill="#e9f0e6" font-weight="800">${title}</text>
-        <text x="150" y="134" font-family="ui-sans-serif, system-ui" font-size="13" fill="#e9f0e6" opacity=".72">FIELD LABEL • OFFLINE SVG</text>
+  <!-- Stats -->
 
-        <text x="46" y="210" font-family="ui-sans-serif, system-ui" font-size="34" fill="#e9f0e6" opacity=".85">${glyph}</text>
-        <path d="M150 168 h360" stroke="#ffffff" stroke-opacity=".12" stroke-width="2" stroke-dasharray="6 8"/>
-      </svg>`;
-      return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-    };
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-item">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-label">張閃卡</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statTags">0</div>
+      <div class="stat-label">個分類</div>
+    </div>
+  </div>
 
-    const items = [
-      {cat:"Essentials", name:"Water Bottle (1L)", desc:"Hydration first. Wide mouth, easy to clean.", tags:["hydration","durable"], img: svgData("Water", "#8bd3a8", "💧")},
-      {cat:"Essentials", name:"Headlamp", desc:"Hands-free light with red mode.", tags:["light","night"], img: svgData("Headlamp", "#cbb48d", "🔦")},
-      {cat:"Essentials", name:"Power Bank", desc:"Compact backup power for phone/GPS.", tags:["power","usb-c"], img: svgData("Power", "#8db5ff", "🔋")},
+  <!-- Cards -->
 
-      {cat:"Tools", name:"Multi-tool", desc:"Pliers + blade + driver in one.", tags:["utility","steel"], img: svgData("Multi-tool", "#8bd3a8", "🛠️")},
-      {cat:"Tools", name:"Paracord 550", desc:"Lash, tie, repair — a small coil goes far.", tags:["rope","repair"], img: svgData("Paracord", "#cbb48d", "🪢")},
-      {cat:"Tools", name:"Fire Starter Kit", desc:"Ferro rod + tinder. Works when wet.", tags:["fire","backup"], img: svgData("Fire", "#ffb86b", "🔥")},
+  <div class="cards-container" id="cardsContainer">
+    <div class="print-header">
+      <h2 id="printTitle">FlashForge 閃卡</h2>
+      <p id="printMeta"></p>
+    </div>
+    <div class="cards-grid layout-2" id="cardsGrid"></div>
+  </div>
 
-      {cat:"Med", name:"Mini First Aid", desc:"Bandages, gauze, antiseptic wipes.", tags:["first-aid","compact"], img: svgData("First Aid", "#ff8b8b", "🩹")},
-      {cat:"Med", name:"Blister Care", desc:"Moleskin + tape for long walks.", tags:["feet","trail"], img: svgData("Blisters", "#ff8b8b", "👣")},
-      {cat:"Med", name:"Electrolyte Tabs", desc:"Helps on hot/humid days.", tags:["salts","heat"], img: svgData("Electrolyte", "#ff8b8b", "🧂")},
+  <!-- Empty state -->
 
-      {cat:"Clothing", name:"Rain Shell", desc:"Lightweight wind & rain protection.", tags:["rain","packable"], img: svgData("Shell", "#8db5ff", "🧥")},
-      {cat:"Clothing", name:"Trail Cap", desc:"Sun + sweat management.", tags:["sun","breathable"], img: svgData("Cap", "#8db5ff", "🧢")},
-      {cat:"Clothing", name:"Merino Socks", desc:"Warm, low-odor, great for hikes.", tags:["comfort","warm"], img: svgData("Socks", "#8db5ff", "🧦")},
-    ];
+  <div class="empty-state" id="emptyState">
+    <div class="icon">🃏</div>
+    <h3>上傳 CSV 開始製作閃卡</h3>
+    <p>將 NotebookLM 匯出嘅 CSV 拖放到上方，即可生成可打印嘅閃卡</p>
+  </div>
+</main>
 
-    const grid = document.getElementById('grid');
-    const chips = Array.from(document.querySelectorAll('.chip'));
+<footer>
+  FlashForge &mdash; Built for learning 📚
+</footer>
 
-    const counts = {
-      all: items.length,
-      Essentials: items.filter(i=>i.cat==="Essentials").length,
-      Tools: items.filter(i=>i.cat==="Tools").length,
-      Med: items.filter(i=>i.cat==="Med").length,
-      Clothing: items.filter(i=>i.cat==="Clothing").length,
-    };
+<script>
+// ========== STATE ==========
+let csvData = [];
+let csvHeaders = [];
+let cards = [];
+let answersVisible = true;
+let currentLayout = 2;
 
-    const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v); };
-    setText('count-all', counts.all);
-    setText('count-Essentials', counts.Essentials);
-    setText('count-Tools', counts.Tools);
-    setText('count-Med', counts.Med);
-    setText('count-Clothing', counts.Clothing);
-    setText('kpi-total', counts.all);
+// ========== UPLOAD ==========
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
 
-    const cardHtml = (it) => {
-      const tags = it.tags.map(t => `<span class="tag">${t}</span>`).join('');
-      return `
-        <article class="card" data-cat="${it.cat}">
-          <div class="media"><img alt="${it.name}" src="${it.img}" loading="lazy"></div>
-          <div class="body">
-            <div class="top">
-              <h3>${it.name}</h3>
-              <span class="badge">${it.cat}</span>
-            </div>
-            <div class="muted">${it.desc}</div>
-            <div class="tags">${tags}</div>
-          </div>
-        </article>
+uploadZone.addEventListener('click', () => fileInput.click());
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('dragover');
+});
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files.length) handleFile(e.target.files[0]);
+});
+
+function handleFile(file) {
+  if (!file.name.match(/\.(csv|tsv|txt)$/i)) {
+    alert('請上傳 CSV、TSV 或 TXT 檔案');
+    return;
+  }
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    encoding: 'UTF-8',
+    complete: (results) => {
+      if (results.data.length === 0) {
+        alert('檔案無資料，請檢查格式');
+        return;
+      }
+      csvData = results.data;
+      csvHeaders = results.meta.fields || [];
+
+      // Update upload zone
+      uploadZone.classList.add('has-file');
+      uploadZone.innerHTML = `
+        <div class="file-info">
+          <span style="font-size:24px">✅</span>
+          <span class="file-name">${file.name}</span>
+          <span class="file-stats">${csvData.length} 行 · ${csvHeaders.length} 欄</span>
+          <button class="btn-remove" onclick="resetAll(event)">✕ 移除</button>
+        </div>
       `;
-    };
 
-    grid.innerHTML = items.map(cardHtml).join('');
+      showMapping();
+    },
+    error: (err) => {
+      alert('解析失敗: ' + err.message);
+    }
+  });
+}
 
-    const applyFilter = (cat) => {
-      const cards = Array.from(document.querySelectorAll('.card'));
-      let showing = 0;
-      cards.forEach(c => {
-        const ok = (cat === 'all') || (c.dataset.cat === cat);
-        c.classList.toggle('hidden', !ok);
-        if (ok) showing++;
-      });
-      setText('kpi-showing', showing);
-      setText('kpi-mode', cat === 'all' ? 'All' : cat);
-    };
+// ========== COLUMN MAPPING ==========
+const frontKeywords = ['front', 'question', 'q', 'term', 'word', 'prompt', '問題', '題目', '正面', '詞語', '字詞', '前面', '概念'];
+const backKeywords = ['back', 'answer', 'a', 'definition', 'response', 'explanation', '答案', '解答', '背面', '定義', '釋義', '解釋', '後面'];
+const tagKeywords = ['tag', 'category', 'topic', 'chapter', 'type', 'group', '分類', '標籤', '主題', '章節', '類別'];
 
-    chips.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cat = btn.dataset.cat;
-        chips.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-        applyFilter(cat);
-      });
-    });
+function autoDetectColumn(keywords) {
+  for (const kw of keywords) {
+    const found = csvHeaders.find(h => h.toLowerCase().trim() === kw);
+    if (found) return found;
+  }
+  for (const kw of keywords) {
+    const found = csvHeaders.find(h => h.toLowerCase().includes(kw));
+    if (found) return found;
+  }
+  return null;
+}
 
-    applyFilter('all');
-  </script>
+function showMapping() {
+  const section = document.getElementById('mappingSection');
+  section.classList.add('active');
+
+  const frontSel = document.getElementById('mapFront');
+  const backSel = document.getElementById('mapBack');
+  const tagSel = document.getElementById('mapTag');
+
+  const optionsHtml = csvHeaders.map(h => `<option value="${h}">${h}</option>`).join('');
+  frontSel.innerHTML = optionsHtml;
+  backSel.innerHTML = optionsHtml;
+  tagSel.innerHTML = `<option value="">— 無 —</option>` + optionsHtml;
+
+  // Auto-detect
+  const detectedFront = autoDetectColumn(frontKeywords);
+  const detectedBack = autoDetectColumn(backKeywords);
+  const detectedTag = autoDetectColumn(tagKeywords);
+
+  if (detectedFront) frontSel.value = detectedFront;
+  else if (csvHeaders.length >= 1) frontSel.value = csvHeaders[0];
+
+  if (detectedBack) backSel.value = detectedBack;
+  else if (csvHeaders.length >= 2) backSel.value = csvHeaders[1];
+
+  if (detectedTag) tagSel.value = detectedTag;
+
+  // If clearly only 2 useful columns, auto-generate
+  if (csvHeaders.length <= 3 && detectedFront && detectedBack) {
+    applyMapping();
+  }
+}
+
+function applyMapping() {
+  const frontCol = document.getElementById('mapFront').value;
+  const backCol = document.getElementById('mapBack').value;
+  const tagCol = document.getElementById('mapTag').value;
+
+  if (frontCol === backCol) {
+    alert('正面同背面唔可以用同一欄');
+    return;
+  }
+
+  cards = csvData
+    .filter(row => (row[frontCol] || '').trim() || (row[backCol] || '').trim())
+    .map((row, i) => ({
+      num: i + 1,
+      front: (row[frontCol] || '').trim(),
+      back: (row[backCol] || '').trim(),
+      tag: tagCol ? (row[tagCol] || '').trim() : ''
+    }));
+
+  if (cards.length === 0) {
+    alert('搵唔到有效資料，請檢查欄位對應');
+    return;
+  }
+
+  renderCards();
+  document.getElementById('mappingSection').classList.remove('active');
+}
+
+// ========== RENDER CARDS ==========
+function renderCards() {
+  const grid = document.getElementById('cardsGrid');
+  const tags = [...new Set(cards.map(c => c.tag).filter(Boolean))];
+
+  grid.innerHTML = cards.map(c => `
+    <div class="flashcard">
+      <div class="flashcard-num">#${c.num}</div>
+      <div class="flashcard-front">
+        <div class="content">${escHtml(c.front)}</div>
+      </div>
+      <div class="flashcard-back answer-area">
+        <div class="content">${escHtml(c.back)}</div>
+        ${c.tag ? `<div class="flashcard-tag"><span>${escHtml(c.tag)}</span></div>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  // Update UI
+  document.getElementById('cardsContainer').classList.add('active');
+  document.getElementById('toolbar').classList.add('active');
+  document.getElementById('statsBar').classList.add('active');
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('statTotal').textContent = cards.length;
+  document.getElementById('statTags').textContent = tags.length;
+  document.getElementById('printMeta').textContent = `共 ${cards.length} 張閃卡 · ${new Date().toLocaleDateString('zh-HK')}`;
+
+  answersVisible = true;
+}
+
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// ========== LAYOUT ==========
+function setLayout(cols, btn) {
+  const grid = document.getElementById('cardsGrid');
+  grid.className = 'cards-grid';
+
+  if (cols === 'list') {
+    grid.classList.add('layout-list');
+  } else {
+    grid.classList.add(`layout-${cols}`);
+  }
+
+  currentLayout = cols;
+  document.querySelectorAll('.btn-layout').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setFontSize(size) {
+  const grid = document.getElementById('cardsGrid');
+  const map = { small: '12px', medium: '14px', large: '16px' };
+  const mapBack = { small: '11px', medium: '13px', large: '15px' };
+  grid.querySelectorAll('.flashcard-front .content').forEach(el => el.style.fontSize = map[size]);
+  grid.querySelectorAll('.flashcard-back .content').forEach(el => el.style.fontSize = mapBack[size]);
+}
+
+function toggleAnswers() {
+  answersVisible = !answersVisible;
+  document.querySelectorAll('.answer-area').forEach(el => {
+    el.style.display = answersVisible ? '' : 'none';
+  });
+}
+
+// ========== SAMPLE DATA ==========
+function loadSampleData() {
+  const sampleCSV = `Front,Back,Tag
+什麼是光合作用？,植物利用陽光、水和二氧化碳，製造葡萄糖和氧氣的過程。,生物
+What is the water cycle?,The continuous movement of water between Earth's surface and atmosphere through evaporation condensation and precipitation.,Science
+地球自轉一圈需要多久？,約 24 小時（一天）。,天文
+What are the three states of matter?,Solid liquid and gas. Matter can change between states by adding or removing heat.,Science
+什麼是食物鏈？,生物之間透過食物形成的能量傳遞關係，由生產者到消費者再到分解者。,生物
+How do magnets work?,Magnets have a north and south pole. Opposite poles attract and same poles repel each other.,Physics
+香港的官方語言是什麼？,中文和英文。,常識
+What is gravity?,A force that pulls objects toward each other. Earth's gravity keeps us on the ground.,Physics`;
+
+  const parsed = Papa.parse(sampleCSV, { header: true, skipEmptyLines: true });
+  csvData = parsed.data;
+  csvHeaders = parsed.meta.fields;
+
+  uploadZone.classList.add('has-file');
+  uploadZone.innerHTML = `
+    <div class="file-info">
+      <span style="font-size:24px">📋</span>
+      <span class="file-name">示範資料</span>
+      <span class="file-stats">${csvData.length} 行 · ${csvHeaders.length} 欄</span>
+      <button class="btn-remove" onclick="resetAll(event)">✕ 移除</button>
+    </div>
+  `;
+
+  showMapping();
+}
+
+// ========== RESET ==========
+function resetAll(e) {
+  if (e) e.stopPropagation();
+  csvData = [];
+  csvHeaders = [];
+  cards = [];
+  fileInput.value = '';
+
+  uploadZone.classList.remove('has-file');
+  uploadZone.innerHTML = `
+    <span class="upload-icon">📄</span>
+    <h2>拖放 CSV 檔案到此處</h2>
+    <p>或點擊此處選擇檔案 — 支援 NotebookLM 匯出嘅 CSV 格式</p>
+    <input type="file" id="fileInput" accept=".csv,.tsv,.txt">
+  `;
+
+  // Re-bind file input
+  document.getElementById('fileInput').addEventListener('change', (e) => {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  document.getElementById('mappingSection').classList.remove('active');
+  document.getElementById('toolbar').classList.remove('active');
+  document.getElementById('statsBar').classList.remove('active');
+  document.getElementById('cardsContainer').classList.remove('active');
+  document.getElementById('cardsGrid').innerHTML = '';
+  document.getElementById('emptyState').style.display = '';
+}
+</script>
+
 </body>
 </html>
