@@ -3,41 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlashForge — NotebookLM CSV → 閃卡 & PDF</title>
+<title>FlashForge — NotebookLM CSV → 可列印閃卡</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
 :root {
   --ink: #1a1a2e;
+  --ink-80: rgba(26,26,46,0.8);
   --ink-50: rgba(26,26,46,0.5);
   --ink-20: rgba(26,26,46,0.2);
   --ink-08: rgba(26,26,46,0.08);
   --ink-04: rgba(26,26,46,0.04);
-  --paper: #faf9f6;
-  --paper-warm: #f5f0e8;
+  --paper: #f7f6f3;
   --white: #ffffff;
   --accent: #e85d26;
   --accent-light: #fff0eb;
   --accent-dark: #c44a1a;
   --mint: #2a9d8f;
   --mint-light: #e8f6f4;
-  --blue: #457b9d;
-  --blue-light: #eaf2f7;
   --gold: #e9c46a;
   --gold-light: #fdf8eb;
+  --card-dark: #2d2d2d;
+  --card-dark-text: #f0f0f0;
   --radius: 12px;
   --radius-lg: 20px;
+  --radius-card: 20px;
   --shadow-sm: 0 1px 3px rgba(26,26,46,0.06);
   --shadow-md: 0 4px 16px rgba(26,26,46,0.08);
   --shadow-lg: 0 8px 32px rgba(26,26,46,0.12);
-  --shadow-xl: 0 16px 48px rgba(26,26,46,0.16);
   --font-body: 'DM Sans', 'Noto Sans TC', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  /* Card height variable — both sides equal */
+  --card-face-height: 180px;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
   font-family: var(--font-body);
   background: var(--paper);
@@ -47,691 +47,308 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ========== HEADER ========== */
+/* HEADER */
 header {
-  background: var(--ink);
-  color: var(--paper);
-  padding: 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: var(--shadow-lg);
+  background: var(--ink); color: var(--paper);
+  position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-lg);
 }
-
 .header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  max-width: 1100px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
+.logo { display: flex; align-items: center; gap: 12px; }
 .logo-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--accent);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  transform: rotate(-3deg);
-  flex-shrink: 0;
+  width: 38px; height: 38px; background: var(--accent); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; transform: rotate(-3deg); flex-shrink: 0;
 }
-
-.logo h1 {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-.logo h1 span {
-  color: var(--accent);
-}
-
+.logo h1 { font-size: 19px; font-weight: 700; letter-spacing: -0.5px; }
+.logo h1 span { color: var(--accent); }
 .header-tag {
-  font-size: 11px;
-  font-family: var(--font-mono);
-  background: rgba(255,255,255,0.1);
-  padding: 4px 10px;
-  border-radius: 20px;
+  font-size: 11px; font-family: var(--font-mono);
+  background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px;
   color: rgba(255,255,255,0.6);
 }
 
-/* ========== MAIN ========== */
-main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px 80px;
-}
+/* MAIN */
+main { max-width: 900px; margin: 0 auto; padding: 28px 24px 80px; }
 
-/* ========== UPLOAD ZONE ========== */
-.upload-section {
-  margin-bottom: 32px;
-}
-
+/* UPLOAD */
+.upload-section { margin-bottom: 28px; }
 .upload-zone {
-  border: 2px dashed var(--ink-20);
-  border-radius: var(--radius-lg);
-  padding: 48px 32px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: var(--white);
-  position: relative;
-  overflow: hidden;
+  border: 2px dashed var(--ink-20); border-radius: var(--radius-lg);
+  padding: 44px 32px; text-align: center; cursor: pointer;
+  transition: all 0.3s ease; background: var(--white);
+  position: relative; overflow: hidden;
 }
-
 .upload-zone::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 8px,
-    var(--ink-04) 8px,
-    var(--ink-04) 9px
-  );
-  opacity: 0;
-  transition: opacity 0.3s;
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(-45deg, transparent, transparent 8px, var(--ink-04) 8px, var(--ink-04) 9px);
+  opacity: 0; transition: opacity 0.3s;
 }
-
-.upload-zone:hover,
-.upload-zone.dragover {
-  border-color: var(--accent);
-  background: var(--accent-light);
-  transform: scale(1.005);
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: var(--accent); background: var(--accent-light); transform: scale(1.003);
 }
-
-.upload-zone:hover::before,
-.upload-zone.dragover::before {
-  opacity: 1;
-}
-
+.upload-zone:hover::before, .upload-zone.dragover::before { opacity: 1; }
 .upload-zone.has-file {
-  border-style: solid;
-  border-color: var(--mint);
-  background: var(--mint-light);
-  padding: 24px 32px;
+  border-style: solid; border-color: var(--mint);
+  background: var(--mint-light); padding: 20px 32px;
 }
-
-.upload-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  display: block;
-  position: relative;
-  z-index: 1;
-}
-
-.upload-zone h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  position: relative;
-  z-index: 1;
-}
-
-.upload-zone p {
-  color: var(--ink-50);
-  font-size: 14px;
-  position: relative;
-  z-index: 1;
-}
-
-.upload-zone input[type="file"] {
-  display: none;
-}
-
+.upload-icon { font-size: 44px; margin-bottom: 14px; display: block; position: relative; z-index: 1; }
+.upload-zone h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; position: relative; z-index: 1; }
+.upload-zone p { color: var(--ink-50); font-size: 13px; position: relative; z-index: 1; }
+.upload-zone input[type="file"] { display: none; }
 .file-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  position: relative;
-  z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; position: relative; z-index: 1; flex-wrap: wrap;
 }
-
-.file-info .file-name {
-  font-weight: 600;
-  font-family: var(--font-mono);
-  font-size: 14px;
-}
-
-.file-info .file-stats {
-  color: var(--ink-50);
-  font-size: 13px;
-}
-
+.file-info .file-name { font-weight: 600; font-family: var(--font-mono); font-size: 14px; }
+.file-info .file-stats { color: var(--ink-50); font-size: 13px; }
 .btn-remove {
-  background: none;
-  border: 1px solid var(--ink-20);
-  border-radius: 8px;
-  padding: 4px 12px;
-  font-size: 12px;
-  cursor: pointer;
-  color: var(--ink-50);
-  transition: all 0.2s;
+  background: none; border: 1px solid var(--ink-20); border-radius: 8px;
+  padding: 4px 12px; font-size: 12px; cursor: pointer; color: var(--ink-50); transition: all 0.2s;
 }
+.btn-remove:hover { background: #fee; border-color: #e55; color: #c33; }
 
-.btn-remove:hover {
-  background: #fee;
-  border-color: #e55;
-  color: #c33;
-}
-
-/* ========== COLUMN MAPPING ========== */
+/* MAPPING */
 .mapping-section {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  margin-bottom: 32px;
-  box-shadow: var(--shadow-sm);
-  display: none;
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 24px; margin-bottom: 28px; box-shadow: var(--shadow-sm); display: none;
 }
-
 .mapping-section.active { display: block; }
-
-.mapping-section h3 {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mapping-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-@media (max-width: 640px) {
-  .mapping-row { grid-template-columns: 1fr; }
-}
-
+.mapping-section h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.mapping-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media (max-width: 640px) { .mapping-row { grid-template-columns: 1fr; } }
 .mapping-group label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--ink-50);
-  margin-bottom: 6px;
+  display: block; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-50); margin-bottom: 5px;
 }
-
 .mapping-group select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--ink-20);
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 14px;
-  background: var(--paper);
-  cursor: pointer;
-  transition: border-color 0.2s;
-  appearance: auto;
+  width: 100%; padding: 9px 12px; border: 1px solid var(--ink-20);
+  border-radius: var(--radius); font-family: var(--font-body); font-size: 13px;
+  background: var(--paper); cursor: pointer; appearance: auto;
 }
+.mapping-group select:focus { outline: none; border-color: var(--accent); }
 
-.mapping-group select:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-/* ========== TOOLBAR ========== */
+/* TOOLBAR */
 .toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 24px;
-  display: none;
+  display: none; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 20px;
+  padding: 14px 18px; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
 }
-
 .toolbar.active { display: flex; }
-
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
+.toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 18px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border: none; border-radius: var(--radius);
+  font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-secondary { background: var(--white); color: var(--ink); border: 1px solid var(--ink-20); }
+.btn-secondary:hover { background: var(--paper); border-color: var(--ink-50); }
+.btn-mint { background: var(--mint); color: white; }
+.btn-mint:hover { background: #238b7f; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.layout-btns { display: flex; border: 1px solid var(--ink-20); border-radius: var(--radius); overflow: hidden; }
+.layout-btns .btn-layout {
+  padding: 7px 13px; border: none; background: var(--white); cursor: pointer;
+  font-size: 12px; font-weight: 600; font-family: var(--font-body); color: var(--ink-50); transition: all 0.2s;
+}
+.layout-btns .btn-layout + .btn-layout { border-left: 1px solid var(--ink-20); }
+.layout-btns .btn-layout.active { background: var(--ink); color: var(--paper); }
+.tool-select {
+  padding: 7px 10px; border: 1px solid var(--ink-20); border-radius: var(--radius);
+  font-family: var(--font-body); font-size: 12px; background: var(--white); cursor: pointer;
+}
+.cb-label { font-size: 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+
+/* STATS */
+.stats-bar {
+  display: none; gap: 24px; margin-bottom: 20px;
+  padding: 12px 18px; background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); align-items: center;
+}
+.stats-bar.active { display: flex; }
+.stat-item { display: flex; align-items: center; gap: 8px; }
+.stat-num { font-size: 22px; font-weight: 700; font-family: var(--font-mono); color: var(--accent); }
+.stat-label { font-size: 12px; color: var(--ink-50); font-weight: 500; }
+
+/* CARD CONTAINER */
+.cards-container { display: none; }
+.cards-container.active { display: block; }
+.cards-grid { display: grid; gap: 24px; }
+.cards-grid.cols-1 { grid-template-columns: 1fr; }
+.cards-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 780px) { .cards-grid.cols-2 { grid-template-columns: 1fr; } }
+
+/* ===== FLASHCARD — NotebookLM Style ===== */
+.flashcard {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all 0.25s ease;
+  border: 1px solid var(--ink-08);
+}
+.flashcard:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+
+/* Front — Dark (Question) */
+.flashcard-front {
+  background: var(--card-dark);
+  color: var(--card-dark-text);
+  height: var(--card-face-height);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+}
+.flashcard-front .card-num {
+  position: absolute; top: 14px; right: 18px;
+  font-size: 11px; font-family: var(--font-mono); font-weight: 500;
+  color: rgba(255,255,255,0.2);
+}
+.flashcard-front .content {
+  font-size: 18px; font-weight: 700; line-height: 1.7;
+  width: 100%;
+}
+
+/* ---- Fold line ---- */
+.flashcard-fold {
+  position: relative;
+  height: 0;
+  z-index: 2;
+}
+.flashcard-fold-line {
+  position: absolute; left: 0; right: 0; top: 0;
   border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+  border-top: 2.5px dashed rgba(180,180,180,0.6);
+}
+.flashcard-fold .scissors {
+  position: absolute; left: 12px; top: -9px;
+  font-size: 14px; color: rgba(160,160,160,0.5); line-height: 1; z-index: 3;
+}
+.flashcard-fold .fold-text {
+  position: absolute; left: 50%; top: -8px; transform: translateX(-50%);
+  font-size: 9px; font-family: var(--font-mono); font-weight: 500;
+  color: rgba(160,160,160,0.5); letter-spacing: 0.5px;
+  background: var(--white); padding: 0 10px; z-index: 3;
   white-space: nowrap;
 }
 
-.btn-primary {
-  background: var(--accent);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-secondary {
+/* Back — Light (Answer) */
+.flashcard-back {
   background: var(--white);
   color: var(--ink);
-  border: 1px solid var(--ink-20);
-}
-
-.btn-secondary:hover {
-  background: var(--paper);
-  border-color: var(--ink-50);
-}
-
-.btn-secondary.active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
-
-.btn-mint {
-  background: var(--mint);
-  color: white;
-}
-
-.btn-mint:hover {
-  background: #238b7f;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.layout-btns {
+  height: var(--card-face-height);
+  padding: 24px 28px;
   display: flex;
-  border: 1px solid var(--ink-20);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.layout-btns .btn-layout {
-  padding: 8px 14px;
-  border: none;
-  background: var(--white);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: var(--font-body);
-  color: var(--ink-50);
-  transition: all 0.2s;
-}
-
-.layout-btns .btn-layout + .btn-layout {
-  border-left: 1px solid var(--ink-20);
-}
-
-.layout-btns .btn-layout.active {
-  background: var(--ink);
-  color: var(--paper);
-}
-
-.card-size-select {
-  padding: 8px 12px;
-  border: 1px solid var(--ink-20);
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 13px;
-  background: var(--white);
-  cursor: pointer;
-}
-
-/* ========== FLASHCARD GRID ========== */
-.cards-container {
-  display: none;
-}
-
-.cards-container.active { display: block; }
-
-.cards-grid {
-  display: grid;
-  gap: 20px;
-}
-
-.cards-grid.layout-2 { grid-template-columns: repeat(2, 1fr); }
-.cards-grid.layout-3 { grid-template-columns: repeat(3, 1fr); }
-.cards-grid.layout-4 { grid-template-columns: repeat(4, 1fr); }
-.cards-grid.layout-list { grid-template-columns: 1fr; }
-
-@media (max-width: 900px) {
-  .cards-grid.layout-3,
-  .cards-grid.layout-4 { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 600px) {
-  .cards-grid.layout-2,
-  .cards-grid.layout-3,
-  .cards-grid.layout-4 { grid-template-columns: 1fr; }
-}
-
-/* ========== FLASHCARD ========== */
-.flashcard {
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: all 0.25s ease;
-  border: 1px solid var(--ink-08);
-  position: relative;
-}
-
-.flashcard:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-.flashcard-num {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  font-size: 11px;
-  font-family: var(--font-mono);
-  color: var(--ink-20);
-  font-weight: 500;
-}
-
-.flashcard-front {
-  padding: 20px 20px 16px;
-  border-bottom: 2px dashed var(--ink-08);
-  min-height: 80px;
-  position: relative;
-}
-
-.flashcard-front::before {
-  content: 'Q';
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent);
-  font-family: var(--font-mono);
-  background: var(--accent-light);
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  border-radius: 6px;
-}
-
-.flashcard-front .content {
-  padding-left: 28px;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.flashcard-back {
-  padding: 16px 20px 20px;
-  background: var(--ink-04);
-  min-height: 80px;
+  align-items: flex-start;
   position: relative;
 }
-
-.flashcard-back::before {
-  content: 'A';
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--mint);
-  font-family: var(--font-mono);
-  background: var(--mint-light);
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-}
-
 .flashcard-back .content {
-  padding-left: 28px;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--ink-50);
+  font-size: 16px; line-height: 1.75; color: var(--ink-80);
+  width: 100%;
+}
+.flashcard-back .tag { margin-top: 10px; }
+.flashcard-back .tag span {
+  display: inline-block; font-size: 10px; font-family: var(--font-mono);
+  background: var(--mint-light); color: var(--mint); padding: 2px 8px;
+  border-radius: 4px; font-weight: 500;
 }
 
-.flashcard-tag {
-  margin-top: 10px;
-  padding-left: 28px;
-}
-
-.flashcard-tag span {
-  display: inline-block;
-  font-size: 11px;
-  font-family: var(--font-mono);
-  background: var(--blue-light);
-  color: var(--blue);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 500;
-}
-
-/* ========== LIST VIEW ========== */
-.layout-list .flashcard {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.layout-list .flashcard-front {
-  border-bottom: none;
-  border-right: 2px dashed var(--ink-08);
-}
-
-@media (max-width: 600px) {
-  .layout-list .flashcard {
-    grid-template-columns: 1fr;
-  }
-  .layout-list .flashcard-front {
-    border-right: none;
-    border-bottom: 2px dashed var(--ink-08);
-  }
-}
-
-/* ========== STATS BAR ========== */
-.stats-bar {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 24px;
-  padding: 16px 20px;
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  display: none;
-}
-
-.stats-bar.active { display: flex; }
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.stat-num {
-  font-size: 24px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: var(--accent);
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--ink-50);
-  font-weight: 500;
-}
-
-/* ========== EMPTY STATE ========== */
-.empty-state {
-  text-align: center;
-  padding: 80px 24px;
-  color: var(--ink-50);
-}
-
-.empty-state .icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
-.empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--ink); }
-.empty-state p { font-size: 14px; max-width: 400px; margin: 0 auto; }
-
-/* ========== SAMPLE DATA ========== */
+/* SAMPLE */
 .sample-section {
-  margin-top: 24px;
-  padding: 20px;
-  background: var(--gold-light);
-  border-radius: var(--radius);
-  border: 1px solid var(--gold);
+  margin-top: 20px; padding: 18px 20px;
+  background: var(--gold-light); border-radius: var(--radius); border: 1px solid var(--gold);
 }
-
-.sample-section h4 {
-  font-size: 14px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sample-section p {
-  font-size: 13px;
-  color: var(--ink-50);
-  margin-bottom: 12px;
-}
-
+.sample-section h4 { font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.sample-section p { font-size: 12px; color: var(--ink-50); margin-bottom: 10px; }
 .sample-section pre {
-  background: var(--white);
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.8;
-  overflow-x: auto;
-  border: 1px solid var(--ink-08);
-  margin-bottom: 12px;
+  background: var(--white); padding: 10px 14px; border-radius: 8px;
+  font-family: var(--font-mono); font-size: 11px; line-height: 1.8;
+  overflow-x: auto; border: 1px solid var(--ink-08); margin-bottom: 10px;
 }
 
-/* ========== PRINT STYLES ========== */
-@media print {
-  @page {
-    size: A4;
-    margin: 12mm;
-  }
+/* EMPTY */
+.empty-state { text-align: center; padding: 70px 24px; color: var(--ink-50); }
+.empty-state .icon { font-size: 56px; margin-bottom: 14px; opacity: 0.5; }
+.empty-state h3 { font-size: 17px; margin-bottom: 6px; color: var(--ink); }
+.empty-state p { font-size: 13px; max-width: 380px; margin: 0 auto; }
 
+/* ANIMATION */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.flashcard { animation: fadeUp 0.3s ease both; }
+.flashcard:nth-child(2) { animation-delay: .04s; }
+.flashcard:nth-child(3) { animation-delay: .08s; }
+.flashcard:nth-child(4) { animation-delay: .12s; }
+
+/* FOOTER */
+footer { text-align: center; padding: 20px; color: var(--ink-20); font-size: 11px; font-family: var(--font-mono); }
+
+/* ===== PRINT ===== */
+@media print {
+  @page { size: A4; margin: 8mm; }
   body {
     background: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
-
   header, .upload-section, .mapping-section,
   .toolbar, .stats-bar, .sample-section,
-  .btn-remove, .no-print {
+  .empty-state, .no-print, footer {
     display: none !important;
   }
-
-  main {
-    padding: 0 !important;
-    max-width: 100% !important;
-  }
-
+  main { padding: 0 !important; max-width: 100% !important; }
   .cards-container { display: block !important; }
 
   .cards-grid {
-    gap: 8px !important;
+    gap: 8mm !important;
   }
-
-  .cards-grid.layout-2 { grid-template-columns: repeat(2, 1fr) !important; }
-  .cards-grid.layout-3 { grid-template-columns: repeat(3, 1fr) !important; }
-  .cards-grid.layout-4 { grid-template-columns: repeat(4, 1fr) !important; }
-  .cards-grid.layout-list { grid-template-columns: 1fr !important; }
+  .cards-grid.cols-1 { grid-template-columns: 1fr !important; max-width: 100% !important; }
+  .cards-grid.cols-2 { grid-template-columns: repeat(2, 1fr) !important; }
 
   .flashcard {
-    break-inside: avoid;
-    page-break-inside: avoid;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
     box-shadow: none !important;
-    border: 1px solid #ccc !important;
+    border: 1.5px solid #999 !important;
     transform: none !important;
+    animation: none !important;
+    border-radius: 14px !important;
+  }
+  .flashcard:hover { box-shadow: none !important; transform: none !important; }
+
+  .flashcard-front {
+    background: var(--card-dark) !important;
+    color: var(--card-dark-text) !important;
   }
 
-  .flashcard:hover {
-    box-shadow: none !important;
-    transform: none !important;
+  .flashcard-fold-line {
+    border-top: 2px dashed #999 !important;
   }
-
-  .flashcard-front { min-height: auto; padding: 12px 14px 10px; }
-  .flashcard-back { min-height: auto; padding: 10px 14px 12px; }
-  .flashcard-front .content, .flashcard-back .content { font-size: 12px; }
-  .flashcard-front::before, .flashcard-back::before { font-size: 9px; width: 18px; height: 18px; }
-  .flashcard-num { font-size: 9px; }
+  .flashcard-fold .scissors { color: #999 !important; }
+  .flashcard-fold .fold-text { color: #999 !important; background: white !important; }
 
   .print-header {
     display: block !important;
     text-align: center;
-    padding: 8px 0 16px;
+    padding: 4px 0 10px;
     border-bottom: 2px solid #333;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
+  .print-header h2 { font-size: 14px; }
+  .print-header p { font-size: 9px; color: #666; }
 
-  .print-header h2 { font-size: 16px; }
-  .print-header p { font-size: 11px; color: #666; }
+  body.hide-answers-print .flashcard-back .content { visibility: hidden !important; }
+  body.hide-answers-print .flashcard-back .tag { visibility: hidden !important; }
 }
 
 .print-header { display: none; }
-
-/* ========== ANIMATIONS ========== */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.flashcard {
-  animation: fadeInUp 0.3s ease both;
-}
-
-.flashcard:nth-child(2) { animation-delay: 0.03s; }
-.flashcard:nth-child(3) { animation-delay: 0.06s; }
-.flashcard:nth-child(4) { animation-delay: 0.09s; }
-.flashcard:nth-child(5) { animation-delay: 0.12s; }
-.flashcard:nth-child(6) { animation-delay: 0.15s; }
-
-/* ========== FOOTER ========== */
-footer {
-  text-align: center;
-  padding: 24px;
-  color: var(--ink-20);
-  font-size: 12px;
-  font-family: var(--font-mono);
-}
 </style>
 </head>
 <body>
@@ -742,65 +359,58 @@ footer {
       <div class="logo-icon">🃏</div>
       <h1>Flash<span>Forge</span></h1>
     </div>
-    <div class="header-tag">NotebookLM CSV → 閃卡 & PDF</div>
+    <div class="header-tag">NotebookLM CSV → 可摺疊閃卡</div>
   </div>
 </header>
 
 <main>
-  <!-- Upload -->
   <div class="upload-section">
     <div class="upload-zone" id="uploadZone">
       <span class="upload-icon">📄</span>
       <h2>拖放 CSV 檔案到此處</h2>
-      <p>或點擊此處選擇檔案 — 支援 NotebookLM 匯出嘅 CSV 格式</p>
+      <p>或點擊選擇檔案 — 支援 NotebookLM 匯出嘅 CSV (Front / Back)</p>
       <input type="file" id="fileInput" accept=".csv,.tsv,.txt">
     </div>
-
     <div class="sample-section no-print">
-      <h4>💡 支援嘅 CSV 格式</h4>
-      <p>系統會自動偵測欄位名稱，以下係常見格式：</p>
+      <h4>💡 支援格式</h4>
+      <p>自動偵測 Front/Back、Question/Answer、題目/答案 等欄位名</p>
       <pre>Front,Back
-什麼是光合作用？,植物利用陽光、水和二氧化碳製造養分的過程
-What is photosynthesis?,The process by which plants convert sunlight into energy</pre>
-      <p>亦支援：<code>Question/Answer</code>、<code>Term/Definition</code>、<code>題目/答案</code>、<code>問題/解答</code> 等欄位名</p>
-      <button class="btn btn-secondary" onclick="loadSampleData()">📋 載入示範資料試試</button>
+Kilo 文本編輯器最初是由誰開發的？,Salvatore Sanfilippo (又名 antirez)。
+What is photosynthesis?,Plants convert sunlight into energy.</pre>
+      <button class="btn btn-secondary" onclick="loadSampleData()">📋 載入示範資料</button>
     </div>
   </div>
 
-  <!-- Column Mapping -->
   <div class="mapping-section" id="mappingSection">
     <h3>🔗 欄位對應</h3>
     <div class="mapping-row">
-      <div class="mapping-group">
-        <label>正面 (問題)</label>
-        <select id="mapFront"></select>
-      </div>
-      <div class="mapping-group">
-        <label>背面 (答案)</label>
-        <select id="mapBack"></select>
-      </div>
-      <div class="mapping-group">
-        <label>分類標籤 (選填)</label>
-        <select id="mapTag"></select>
-      </div>
+      <div class="mapping-group"><label>正面 (問題)</label><select id="mapFront"></select></div>
+      <div class="mapping-group"><label>背面 (答案)</label><select id="mapBack"></select></div>
+      <div class="mapping-group"><label>分類標籤 (選填)</label><select id="mapTag"></select></div>
     </div>
     <button class="btn btn-primary" onclick="applyMapping()">✅ 確認並生成閃卡</button>
   </div>
 
-  <!-- Toolbar -->
   <div class="toolbar" id="toolbar">
     <div class="toolbar-left">
       <div class="layout-btns">
-        <button class="btn-layout active" data-cols="2" onclick="setLayout(2, this)">2 欄</button>
-        <button class="btn-layout" data-cols="3" onclick="setLayout(3, this)">3 欄</button>
-        <button class="btn-layout" data-cols="4" onclick="setLayout(4, this)">4 欄</button>
-        <button class="btn-layout" data-cols="list" onclick="setLayout('list', this)">列表</button>
+        <button class="btn-layout active" onclick="setLayout(1,this)">1 欄</button>
+        <button class="btn-layout" onclick="setLayout(2,this)">2 欄</button>
       </div>
-      <select class="card-size-select" id="fontSizeSelect" onchange="setFontSize(this.value)">
+      <select class="tool-select" onchange="setCardSize(this.value)">
+        <option value="large" selected>卡片：大</option>
+        <option value="medium">卡片：中</option>
+        <option value="small">卡片：小</option>
+      </select>
+      <select class="tool-select" onchange="setFontSize(this.value)">
         <option value="small">字體：小</option>
         <option value="medium" selected>字體：中</option>
         <option value="large">字體：大</option>
       </select>
+      <label class="cb-label">
+        <input type="checkbox" onchange="document.body.classList.toggle('hide-answers-print',this.checked)">
+        列印時隱藏答案
+      </label>
     </div>
     <div class="toolbar-right">
       <button class="btn btn-secondary" onclick="toggleAnswers()">👁 顯示/隱藏答案</button>
@@ -808,303 +418,190 @@ What is photosynthesis?,The process by which plants convert sunlight into energy
     </div>
   </div>
 
-  <!-- Stats -->
   <div class="stats-bar" id="statsBar">
-    <div class="stat-item">
-      <div class="stat-num" id="statTotal">0</div>
-      <div class="stat-label">張閃卡</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" id="statTags">0</div>
-      <div class="stat-label">個分類</div>
-    </div>
+    <div class="stat-item"><div class="stat-num" id="statTotal">0</div><div class="stat-label">張閃卡</div></div>
+    <div class="stat-item"><div class="stat-num" id="statTags">0</div><div class="stat-label">個分類</div></div>
   </div>
 
-  <!-- Cards -->
   <div class="cards-container" id="cardsContainer">
     <div class="print-header">
       <h2 id="printTitle">FlashForge 閃卡</h2>
       <p id="printMeta"></p>
     </div>
-    <div class="cards-grid layout-2" id="cardsGrid"></div>
+    <div class="cards-grid cols-1" id="cardsGrid"></div>
   </div>
 
-  <!-- Empty state -->
   <div class="empty-state" id="emptyState">
     <div class="icon">🃏</div>
     <h3>上傳 CSV 開始製作閃卡</h3>
-    <p>將 NotebookLM 匯出嘅 CSV 拖放到上方，即可生成可打印嘅閃卡</p>
+    <p>將 NotebookLM 匯出嘅 CSV 拖放到上方，即可生成可打印摺疊嘅閃卡</p>
   </div>
 </main>
 
-<footer>
-  FlashForge &mdash; Built for learning 📚
-</footer>
+<footer>FlashForge — Built for learning 📚</footer>
 
 <script>
-// ========== STATE ==========
-let csvData = [];
-let csvHeaders = [];
-let cards = [];
-let answersVisible = true;
-let currentLayout = 2;
+let csvData=[], csvHeaders=[], cards=[], answersVisible=true;
 
-// ========== UPLOAD ==========
 const uploadZone = document.getElementById('uploadZone');
 const fileInput = document.getElementById('fileInput');
 
 uploadZone.addEventListener('click', () => fileInput.click());
-uploadZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  uploadZone.classList.add('dragover');
-});
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-uploadZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  uploadZone.classList.remove('dragover');
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('dragover');
   if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
 });
-fileInput.addEventListener('change', (e) => {
-  if (e.target.files.length) handleFile(e.target.files[0]);
-});
+fileInput.addEventListener('change', e => { if (e.target.files.length) handleFile(e.target.files[0]); });
 
 function handleFile(file) {
-  if (!file.name.match(/\.(csv|tsv|txt)$/i)) {
-    alert('請上傳 CSV、TSV 或 TXT 檔案');
-    return;
-  }
-
+  if (!file.name.match(/\.(csv|tsv|txt)$/i)) { alert('請上傳 CSV / TSV / TXT 檔案'); return; }
   Papa.parse(file, {
-    header: true,
-    skipEmptyLines: true,
-    encoding: 'UTF-8',
-    complete: (results) => {
-      if (results.data.length === 0) {
-        alert('檔案無資料，請檢查格式');
-        return;
-      }
-      csvData = results.data;
-      csvHeaders = results.meta.fields || [];
-
-      // Update upload zone
+    header: true, skipEmptyLines: true, encoding: 'UTF-8',
+    complete: r => {
+      if (!r.data.length) { alert('檔案無資料'); return; }
+      csvData = r.data; csvHeaders = r.meta.fields || [];
       uploadZone.classList.add('has-file');
-      uploadZone.innerHTML = `
-        <div class="file-info">
-          <span style="font-size:24px">✅</span>
-          <span class="file-name">${file.name}</span>
-          <span class="file-stats">${csvData.length} 行 · ${csvHeaders.length} 欄</span>
-          <button class="btn-remove" onclick="resetAll(event)">✕ 移除</button>
-        </div>
-      `;
-
+      uploadZone.innerHTML = `<div class="file-info">
+        <span style="font-size:22px">✅</span>
+        <span class="file-name">${file.name}</span>
+        <span class="file-stats">${csvData.length} 行 · ${csvHeaders.length} 欄</span>
+        <button class="btn-remove" onclick="resetAll(event)">✕ 移除</button>
+      </div>`;
       showMapping();
     },
-    error: (err) => {
-      alert('解析失敗: ' + err.message);
-    }
+    error: e => alert('解析失敗: ' + e.message)
   });
 }
 
-// ========== COLUMN MAPPING ==========
-const frontKeywords = ['front', 'question', 'q', 'term', 'word', 'prompt', '問題', '題目', '正面', '詞語', '字詞', '前面', '概念'];
-const backKeywords = ['back', 'answer', 'a', 'definition', 'response', 'explanation', '答案', '解答', '背面', '定義', '釋義', '解釋', '後面'];
-const tagKeywords = ['tag', 'category', 'topic', 'chapter', 'type', 'group', '分類', '標籤', '主題', '章節', '類別'];
+const frontKW=['front','question','q','term','word','prompt','問題','題目','正面','詞語','概念'];
+const backKW=['back','answer','a','definition','response','explanation','答案','解答','背面','定義','解釋'];
+const tagKW=['tag','category','topic','chapter','type','group','分類','標籤','主題','章節','類別'];
 
-function autoDetectColumn(keywords) {
-  for (const kw of keywords) {
-    const found = csvHeaders.find(h => h.toLowerCase().trim() === kw);
-    if (found) return found;
-  }
-  for (const kw of keywords) {
-    const found = csvHeaders.find(h => h.toLowerCase().includes(kw));
-    if (found) return found;
-  }
+function detect(kws) {
+  for (const k of kws) { const f=csvHeaders.find(h=>h.toLowerCase().trim()===k); if(f) return f; }
+  for (const k of kws) { const f=csvHeaders.find(h=>h.toLowerCase().includes(k)); if(f) return f; }
   return null;
 }
 
 function showMapping() {
-  const section = document.getElementById('mappingSection');
-  section.classList.add('active');
-
-  const frontSel = document.getElementById('mapFront');
-  const backSel = document.getElementById('mapBack');
-  const tagSel = document.getElementById('mapTag');
-
-  const optionsHtml = csvHeaders.map(h => `<option value="${h}">${h}</option>`).join('');
-  frontSel.innerHTML = optionsHtml;
-  backSel.innerHTML = optionsHtml;
-  tagSel.innerHTML = `<option value="">— 無 —</option>` + optionsHtml;
-
-  // Auto-detect
-  const detectedFront = autoDetectColumn(frontKeywords);
-  const detectedBack = autoDetectColumn(backKeywords);
-  const detectedTag = autoDetectColumn(tagKeywords);
-
-  if (detectedFront) frontSel.value = detectedFront;
-  else if (csvHeaders.length >= 1) frontSel.value = csvHeaders[0];
-
-  if (detectedBack) backSel.value = detectedBack;
-  else if (csvHeaders.length >= 2) backSel.value = csvHeaders[1];
-
-  if (detectedTag) tagSel.value = detectedTag;
-
-  // If clearly only 2 useful columns, auto-generate
-  if (csvHeaders.length <= 3 && detectedFront && detectedBack) {
-    applyMapping();
-  }
+  const s=document.getElementById('mappingSection'); s.classList.add('active');
+  const o=csvHeaders.map(h=>`<option value="${h}">${h}</option>`).join('');
+  document.getElementById('mapFront').innerHTML=o;
+  document.getElementById('mapBack').innerHTML=o;
+  document.getElementById('mapTag').innerHTML=`<option value="">— 無 —</option>`+o;
+  const df=detect(frontKW),db=detect(backKW),dt=detect(tagKW);
+  if(df) document.getElementById('mapFront').value=df;
+  else if(csvHeaders.length>=1) document.getElementById('mapFront').value=csvHeaders[0];
+  if(db) document.getElementById('mapBack').value=db;
+  else if(csvHeaders.length>=2) document.getElementById('mapBack').value=csvHeaders[1];
+  if(dt) document.getElementById('mapTag').value=dt;
+  if(csvHeaders.length<=3 && df && db) applyMapping();
 }
 
 function applyMapping() {
-  const frontCol = document.getElementById('mapFront').value;
-  const backCol = document.getElementById('mapBack').value;
-  const tagCol = document.getElementById('mapTag').value;
-
-  if (frontCol === backCol) {
-    alert('正面同背面唔可以用同一欄');
-    return;
-  }
-
-  cards = csvData
-    .filter(row => (row[frontCol] || '').trim() || (row[backCol] || '').trim())
-    .map((row, i) => ({
-      num: i + 1,
-      front: (row[frontCol] || '').trim(),
-      back: (row[backCol] || '').trim(),
-      tag: tagCol ? (row[tagCol] || '').trim() : ''
-    }));
-
-  if (cards.length === 0) {
-    alert('搵唔到有效資料，請檢查欄位對應');
-    return;
-  }
-
+  const fc=document.getElementById('mapFront').value;
+  const bc=document.getElementById('mapBack').value;
+  const tc=document.getElementById('mapTag').value;
+  if(fc===bc){alert('正面同背面唔可以用同一欄');return;}
+  cards=csvData.filter(r=>(r[fc]||'').trim()||(r[bc]||'').trim())
+    .map((r,i)=>({num:i+1,front:(r[fc]||'').trim(),back:(r[bc]||'').trim(),tag:tc?(r[tc]||'').trim():''}));
+  if(!cards.length){alert('搵唔到有效資料');return;}
   renderCards();
   document.getElementById('mappingSection').classList.remove('active');
 }
 
-// ========== RENDER CARDS ==========
 function renderCards() {
-  const grid = document.getElementById('cardsGrid');
-  const tags = [...new Set(cards.map(c => c.tag).filter(Boolean))];
-
-  grid.innerHTML = cards.map(c => `
+  const grid=document.getElementById('cardsGrid');
+  const tags=[...new Set(cards.map(c=>c.tag).filter(Boolean))];
+  grid.innerHTML=cards.map(c=>`
     <div class="flashcard">
-      <div class="flashcard-num">#${c.num}</div>
       <div class="flashcard-front">
-        <div class="content">${escHtml(c.front)}</div>
+        <span class="card-num">#${c.num}</span>
+        <div class="content">${esc(c.front)}</div>
+      </div>
+      <div class="flashcard-fold">
+        <div class="flashcard-fold-line"></div>
+        <span class="scissors">✂</span>
+        <span class="fold-text">↑ 沿虛線摺疊 fold here ↓</span>
       </div>
       <div class="flashcard-back answer-area">
-        <div class="content">${escHtml(c.back)}</div>
-        ${c.tag ? `<div class="flashcard-tag"><span>${escHtml(c.tag)}</span></div>` : ''}
+        <div class="content">${esc(c.back)}</div>
+        ${c.tag?`<div class="tag"><span>${esc(c.tag)}</span></div>`:''}
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
-  // Update UI
   document.getElementById('cardsContainer').classList.add('active');
   document.getElementById('toolbar').classList.add('active');
   document.getElementById('statsBar').classList.add('active');
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('statTotal').textContent = cards.length;
-  document.getElementById('statTags').textContent = tags.length;
-  document.getElementById('printMeta').textContent = `共 ${cards.length} 張閃卡 · ${new Date().toLocaleDateString('zh-HK')}`;
-
-  answersVisible = true;
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('statTotal').textContent=cards.length;
+  document.getElementById('statTags').textContent=tags.length;
+  document.getElementById('printMeta').textContent=`共 ${cards.length} 張閃卡 · ${new Date().toLocaleDateString('zh-HK')}`;
+  answersVisible=true;
 }
 
-function escHtml(str) {
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
-// ========== LAYOUT ==========
-function setLayout(cols, btn) {
-  const grid = document.getElementById('cardsGrid');
-  grid.className = 'cards-grid';
-
-  if (cols === 'list') {
-    grid.classList.add('layout-list');
-  } else {
-    grid.classList.add(`layout-${cols}`);
-  }
-
-  currentLayout = cols;
-  document.querySelectorAll('.btn-layout').forEach(b => b.classList.remove('active'));
+function setLayout(c,btn){
+  document.getElementById('cardsGrid').className=`cards-grid cols-${c}`;
+  document.querySelectorAll('.btn-layout').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
 
-function setFontSize(size) {
-  const grid = document.getElementById('cardsGrid');
-  const map = { small: '12px', medium: '14px', large: '16px' };
-  const mapBack = { small: '11px', medium: '13px', large: '15px' };
-  grid.querySelectorAll('.flashcard-front .content').forEach(el => el.style.fontSize = map[size]);
-  grid.querySelectorAll('.flashcard-back .content').forEach(el => el.style.fontSize = mapBack[size]);
+function setCardSize(sz) {
+  const map = { small: '120px', medium: '160px', large: '180px' };
+  document.documentElement.style.setProperty('--card-face-height', map[sz]);
 }
 
-function toggleAnswers() {
-  answersVisible = !answersVisible;
-  document.querySelectorAll('.answer-area').forEach(el => {
-    el.style.display = answersVisible ? '' : 'none';
-  });
+function setFontSize(sz){
+  const map={small:['15px','13px'],medium:['18px','16px'],large:['22px','19px']};
+  const[fq,fa]=map[sz];
+  document.querySelectorAll('.flashcard-front .content').forEach(e=>e.style.fontSize=fq);
+  document.querySelectorAll('.flashcard-back .content').forEach(e=>e.style.fontSize=fa);
 }
 
-// ========== SAMPLE DATA ==========
-function loadSampleData() {
-  const sampleCSV = `Front,Back,Tag
-什麼是光合作用？,植物利用陽光、水和二氧化碳，製造葡萄糖和氧氣的過程。,生物
-What is the water cycle?,The continuous movement of water between Earth's surface and atmosphere through evaporation condensation and precipitation.,Science
-地球自轉一圈需要多久？,約 24 小時（一天）。,天文
-What are the three states of matter?,Solid liquid and gas. Matter can change between states by adding or removing heat.,Science
-什麼是食物鏈？,生物之間透過食物形成的能量傳遞關係，由生產者到消費者再到分解者。,生物
-How do magnets work?,Magnets have a north and south pole. Opposite poles attract and same poles repel each other.,Physics
-香港的官方語言是什麼？,中文和英文。,常識
-What is gravity?,A force that pulls objects toward each other. Earth's gravity keeps us on the ground.,Physics`;
+function toggleAnswers(){
+  answersVisible=!answersVisible;
+  document.querySelectorAll('.answer-area').forEach(el=>el.style.display=answersVisible?'':'none');
+  document.querySelectorAll('.flashcard-fold').forEach(el=>el.style.display=answersVisible?'':'none');
+}
 
-  const parsed = Papa.parse(sampleCSV, { header: true, skipEmptyLines: true });
-  csvData = parsed.data;
-  csvHeaders = parsed.meta.fields;
-
+function loadSampleData(){
+  const csv=`Front,Back
+Kilo 文本編輯器最初是由誰開發的？,Salvatore Sanfilippo (又名 antirez)。
+Kilo 編輯器不依賴 ncurses 庫，而是使用什麼來控制終端？,標準 VT100 終端轉義序列 (Terminal escape sequences)。
+在 C 語言中將終端設為「原始模式」的主要目的是什麼？,直接讀取按鍵輸入並禁用規範模式與回顯。
+Kilo 編輯器為了防止螢幕閃爍採用了什麼渲染技術？,手動緩衝 (Manual buffering) 寫入。
+Kilo Code 是基於哪兩個專案的功能集合而成？,Roo Code 與 Cline。
+Kilo Code CLI 1.0 的底層開源架構是基於哪一個專案？,OpenCode。`;
+  const p=Papa.parse(csv,{header:true,skipEmptyLines:true});
+  csvData=p.data; csvHeaders=p.meta.fields;
   uploadZone.classList.add('has-file');
-  uploadZone.innerHTML = `
-    <div class="file-info">
-      <span style="font-size:24px">📋</span>
-      <span class="file-name">示範資料</span>
-      <span class="file-stats">${csvData.length} 行 · ${csvHeaders.length} 欄</span>
-      <button class="btn-remove" onclick="resetAll(event)">✕ 移除</button>
-    </div>
-  `;
-
+  uploadZone.innerHTML=`<div class="file-info">
+    <span style="font-size:22px">📋</span>
+    <span class="file-name">示範資料</span>
+    <span class="file-stats">${csvData.length} 行 · ${csvHeaders.length} 欄</span>
+    <button class="btn-remove" onclick="resetAll(event)">✕ 移除</button>
+  </div>`;
   showMapping();
 }
 
-// ========== RESET ==========
-function resetAll(e) {
-  if (e) e.stopPropagation();
-  csvData = [];
-  csvHeaders = [];
-  cards = [];
-  fileInput.value = '';
-
+function resetAll(e){
+  if(e) e.stopPropagation();
+  csvData=[]; csvHeaders=[]; cards=[];
+  fileInput.value='';
   uploadZone.classList.remove('has-file');
-  uploadZone.innerHTML = `
+  uploadZone.innerHTML=`
     <span class="upload-icon">📄</span>
     <h2>拖放 CSV 檔案到此處</h2>
-    <p>或點擊此處選擇檔案 — 支援 NotebookLM 匯出嘅 CSV 格式</p>
-    <input type="file" id="fileInput" accept=".csv,.tsv,.txt">
-  `;
-
-  // Re-bind file input
-  document.getElementById('fileInput').addEventListener('change', (e) => {
-    if (e.target.files.length) handleFile(e.target.files[0]);
-  });
-
-  document.getElementById('mappingSection').classList.remove('active');
-  document.getElementById('toolbar').classList.remove('active');
-  document.getElementById('statsBar').classList.remove('active');
-  document.getElementById('cardsContainer').classList.remove('active');
-  document.getElementById('cardsGrid').innerHTML = '';
-  document.getElementById('emptyState').style.display = '';
+    <p>或點擊選擇檔案 — 支援 NotebookLM 匯出嘅 CSV (Front / Back)</p>
+    <input type="file" id="fileInput" accept=".csv,.tsv,.txt">`;
+  document.getElementById('fileInput').addEventListener('change',e=>{if(e.target.files.length)handleFile(e.target.files[0]);});
+  ['mappingSection','toolbar','statsBar','cardsContainer'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('cardsGrid').innerHTML='';
+  document.getElementById('emptyState').style.display='';
 }
 </script>
 </body>
