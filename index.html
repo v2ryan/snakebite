@@ -1,802 +1,1719 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlashForge — NotebookLM CSV → 可列印閃卡</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<style>
-:root {
-  --ink: #1a1a2e;
-  --ink-80: rgba(26,26,46,0.8);
-  --ink-50: rgba(26,26,46,0.5);
-  --ink-30: rgba(26,26,46,0.3);
-  --ink-20: rgba(26,26,46,0.2);
-  --ink-10: rgba(26,26,46,0.1);
-  --ink-08: rgba(26,26,46,0.08);
-  --ink-04: rgba(26,26,46,0.04);
-  --paper: #f7f6f3;
-  --white: #ffffff;
-  --accent: #e85d26;
-  --accent-light: #fff0eb;
-  --accent-dark: #c44a1a;
-  --mint: #2a9d8f;
-  --mint-light: #e8f6f4;
-  --gold: #e9c46a;
-  --gold-light: #fdf8eb;
-  --radius: 12px;
-  --radius-lg: 18px;
-  --shadow-sm: 0 1px 3px rgba(26,26,46,0.06);
-  --shadow-md: 0 4px 16px rgba(26,26,46,0.08);
-  --shadow-lg: 0 8px 32px rgba(26,26,46,0.12);
-  --font-body: 'DM Sans', 'Noto Sans TC', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --card-w: 380px;
-  --card-face-h: 180px;
-  --card-front-bg: #2d2d2d;
-  --card-front-color: #f0f0f0;
-  --card-back-bg: #ffffff;
-  --card-back-color: #2d2d2d;
-  --card-front-fs: 18px;
-  --card-back-fs: 16px;
-  --card-radius: 18px;
-  --cards-per-row: 1;
-  --card-gap: 24px;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: var(--font-body);
-  background: var(--paper);
-  color: var(--ink);
-  line-height: 1.6;
-  height: 100vh;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3C陪你過年不NG</title>
+    <meta name="description" content="2026年2月靈修月曆 — 讓『3C』不再只有冷漠，而是帶來愛的溫度">
+    <meta property="og:title" content="3C陪你過年不NG">
+    <meta property="og:description" content="讓『3C』不再只有冷漠，而是帶來愛的溫度 — 2026年2月靈修月曆">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --connect-blue: #2563EB;
+            --connect-bg: #EFF6FF;
+            --care-red: #DC2626;
+            --care-bg: #FEF2F2;
+            --calm-green: #16A34A;
+            --calm-bg: #F0FDF4;
+            --cream: #FFF8F0;
+            --cream-dark: #F5E6D0;
+            --warm-bg: linear-gradient(180deg, #FFF1E6 0%, #FFF8F0 30%, #FFFFFF 100%);
+            --brown-dark: #3E2723;
+            --brown: #5D4037;
+            --brown-light: #8D6E63;
+            --text-dark: #1A1A1A;
+            --text-mid: #4A4A4A;
+            --text-light: #9E9E9E;
+            --border: #F0E6D9;
+            --card-shadow: 0 2px 12px rgba(62, 39, 35, 0.08);
+            --card-shadow-hover: 0 4px 20px rgba(62, 39, 35, 0.14);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --gold: #C9A84C;
+            --red-accent: #C53030;
+        }
 
-/* ===== HEADER ===== */
-header {
-  background: var(--ink); color: #eee;
-  z-index: 200; box-shadow: var(--shadow-lg);
-  height: 56px; flex-shrink: 0;
-}
-.header-inner {
-  max-width: 100%; margin: 0 auto; padding: 0 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 100%; gap: 12px;
-}
-.logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.logo-icon {
-  width: 34px; height: 34px; background: var(--accent); border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px; transform: rotate(-3deg);
-}
-.logo h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.5px; }
-.logo h1 span { color: var(--accent); }
+```
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Header upload area */
-.header-upload {
-  display: flex; align-items: center; gap: 10px; flex: 1; justify-content: center;
-  max-width: 500px;
-}
-.header-upload-btn {
-  display: flex; align-items: center; gap: 6px;
-  padding: 7px 16px; border-radius: 10px;
-  font-family: var(--font-body); font-size: 13px; font-weight: 600;
-  cursor: pointer; transition: all 0.2s; white-space: nowrap;
-  border: 1.5px dashed rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7);
-}
-.header-upload-btn:hover {
-  border-color: var(--accent); background: rgba(232,93,38,0.15); color: var(--accent);
-}
-.header-upload-btn.has-file {
-  border-style: solid; border-color: var(--mint);
-  background: rgba(42,157,143,0.15); color: var(--mint-light);
-}
-.header-upload-btn input { display: none; }
-.header-file-name {
-  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-  color: rgba(255,255,255,0.5); max-width: 180px; overflow: hidden;
-  text-overflow: ellipsis; white-space: nowrap;
-}
-.header-file-clear {
-  background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
-  color: rgba(255,255,255,0.4); font-size: 11px; padding: 3px 8px;
-  cursor: pointer; transition: all 0.2s;
-}
-.header-file-clear:hover { border-color: #e55; color: #faa; background: rgba(255,0,0,0.1); }
+    body {
+        font-family: 'Noto Sans TC', -apple-system, sans-serif;
+        background: var(--warm-bg);
+        color: var(--text-dark);
+        min-height: 100dvh;
+        -webkit-font-smoothing: antialiased;
+    }
 
-.header-tag {
-  font-size: 10px; font-family: var(--font-mono);
-  background: rgba(255,255,255,0.08); padding: 3px 10px; border-radius: 20px;
-  color: rgba(255,255,255,0.4); flex-shrink: 0;
-}
+    /* ========== ANIMATIONS ========== */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(100%); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(100%); }
+    }
+    @keyframes popIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        70% { transform: scale(1.05); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes checkmark {
+        0% { stroke-dashoffset: 30; }
+        100% { stroke-dashoffset: 0; }
+    }
+    @keyframes progressFill {
+        from { width: 0; }
+    }
+    @keyframes confetti {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+    }
 
-/* ===== APP LAYOUT — independent scroll ===== */
-.app-body {
-  display: flex;
-  height: calc(100vh - 56px);
-  overflow: hidden;
-}
+    /* ========== HEADER ========== */
+    .header {
+        text-align: center;
+        padding: 48px 20px 32px;
+        background: linear-gradient(180deg, #FFE8D6 0%, #FFF1E6 100%);
+        position: relative;
+    }
 
-/* Left panel — scrolls independently */
-.panel {
-  width: 310px; flex-shrink: 0;
-  background: var(--white);
-  border-right: 1px solid var(--ink-08);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--ink-20) transparent;
-}
-.panel::-webkit-scrollbar { width: 5px; }
-.panel::-webkit-scrollbar-track { background: transparent; }
-.panel::-webkit-scrollbar-thumb { background: var(--ink-20); border-radius: 3px; }
+    .header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0; right: 0;
+        height: 40px;
+        background: linear-gradient(180deg, transparent, #FFF8F0);
+    }
 
-/* Right content — scrolls independently */
-.content-area {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 20px 24px 80px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--ink-20) transparent;
-}
-.content-area::-webkit-scrollbar { width: 6px; }
-.content-area::-webkit-scrollbar-track { background: transparent; }
-.content-area::-webkit-scrollbar-thumb { background: var(--ink-20); border-radius: 3px; }
+    .header h1 {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--brown-dark);
+        letter-spacing: 2px;
+    }
 
-@media (max-width: 900px) {
-  .app-body { flex-direction: column; height: auto; overflow: auto; }
-  .panel { width: 100%; border-right: none; border-bottom: 1px solid var(--ink-08); overflow-y: visible; max-height: none; }
-  .content-area { overflow-y: visible; }
-  body { overflow: auto; height: auto; }
-}
+    .header h1 .accent {
+        color: var(--red-accent);
+        font-size: 36px;
+    }
 
-/* ===== PANEL SECTIONS ===== */
-.panel-section {
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--ink-08);
-}
-.panel-section:last-child { border-bottom: none; }
-.panel-title {
-  font-size: 11px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 1px; color: var(--ink-50); margin-bottom: 12px;
-  display: flex; align-items: center; gap: 6px;
-}
+    .header .subtitle {
+        font-size: 15px;
+        color: var(--brown-light);
+        margin-top: 8px;
+        letter-spacing: 1px;
+    }
 
-/* Slider controls */
-.ctrl-group { margin-bottom: 14px; }
-.ctrl-group:last-child { margin-bottom: 0; }
-.ctrl-label {
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--ink-80);
-}
-.ctrl-label .val {
-  font-family: var(--font-mono); font-size: 11px;
-  background: var(--ink-08); padding: 1px 7px; border-radius: 4px;
-  color: var(--ink-50); min-width: 42px; text-align: center;
-}
-input[type="range"] {
-  -webkit-appearance: none; appearance: none;
-  width: 100%; height: 6px; border-radius: 3px;
-  background: var(--ink-10); outline: none; cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent); border: 3px solid var(--white);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: grab;
-}
-input[type="range"]::-moz-range-thumb {
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent); border: 3px solid var(--white);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: grab;
-}
+    /* ========== MAIN CONTAINER ========== */
+    .container {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 0 16px 40px;
+    }
 
-/* Swatches */
-.swatch-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.swatch {
-  aspect-ratio: 1; border-radius: 8px; cursor: pointer;
-  border: 2.5px solid transparent; transition: all 0.15s; position: relative;
-}
-.swatch:hover { transform: scale(1.15); z-index: 2; }
-.swatch.active {
-  border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-light); transform: scale(1.1);
-}
-.swatch.active::after {
-  content: '✓'; position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-}
-.swatch.light.active::after { color: #333; text-shadow: none; }
-.custom-color-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; }
-.custom-color-row input[type="color"] {
-  width: 30px; height: 30px; border: 2px solid var(--ink-20);
-  border-radius: 8px; cursor: pointer; padding: 0; background: none;
-}
-.custom-color-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
-.custom-color-row input[type="color"]::-webkit-color-swatch { border-radius: 4px; border: none; }
-.custom-color-row span { font-size: 11px; color: var(--ink-50); }
+    /* ========== PROGRESS CARD ========== */
+    .progress-card {
+        background: white;
+        border-radius: var(--radius);
+        padding: 24px;
+        margin: -16px 0 24px;
+        position: relative;
+        z-index: 2;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+    }
 
-/* Per row buttons */
-.per-page-btns { display: flex; gap: 4px; }
-.pp-btn {
-  flex: 1; padding: 7px 0; border: 1.5px solid var(--ink-20);
-  border-radius: 8px; background: var(--white); cursor: pointer;
-  font-family: var(--font-body); font-size: 12px; font-weight: 600;
-  color: var(--ink-50); text-align: center; transition: all 0.15s;
-}
-.pp-btn:hover { border-color: var(--ink-30); color: var(--ink); }
-.pp-btn.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
+    .progress-card .trophy { font-size: 28px; }
 
-/* Panel buttons */
-.panel-actions { display: flex; flex-direction: column; gap: 8px; padding: 16px 18px; }
-.btn {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 11px 16px; border: none; border-radius: var(--radius);
-  font-family: var(--font-body); font-size: 13px; font-weight: 600;
-  cursor: pointer; transition: all 0.2s; width: 100%;
-}
-.btn-print { background: var(--mint); color: white; font-size: 14px; }
-.btn-print:hover { background: #238b7f; transform: translateY(-1px); box-shadow: var(--shadow-md); }
-.btn-ghost { background: none; color: var(--ink-50); border: 1px solid var(--ink-20); font-size: 12px; padding: 8px; }
-.btn-ghost:hover { background: var(--ink-04); border-color: var(--ink-30); color: var(--ink); }
-.btn-primary { background: var(--accent); color: white; }
-.btn-primary:hover { background: var(--accent-dark); }
-.btn-sample { background: var(--gold-light); color: var(--ink-80); border: 1px solid var(--gold); font-size: 12px; padding: 9px; }
-.btn-sample:hover { background: var(--gold); color: var(--ink); }
+    .progress-card h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--brown-dark);
+        margin: 8px 0 4px;
+    }
 
-/* ===== STATS ===== */
-.stats-bar {
-  display: none; gap: 20px; margin-bottom: 16px;
-  padding: 10px 16px; background: var(--white); border-radius: var(--radius);
-  box-shadow: var(--shadow-sm); align-items: center; border: 1px solid var(--ink-08);
-}
-.stats-bar.active { display: flex; }
-.stat-item { display: flex; align-items: center; gap: 6px; }
-.stat-num { font-size: 20px; font-weight: 700; font-family: var(--font-mono); color: var(--accent); }
-.stat-label { font-size: 11px; color: var(--ink-50); font-weight: 500; }
+    .progress-card .desc {
+        font-size: 13px;
+        color: var(--text-light);
+        margin-bottom: 16px;
+    }
 
-/* ===== CARDS ===== */
-.cards-container { display: none; }
-.cards-container.active { display: block; }
-.cards-grid {
-  display: grid; gap: var(--card-gap);
-  grid-template-columns: repeat(var(--cards-per-row), 1fr);
-}
+    .progress-bar-wrap {
+        background: #F3F0EB;
+        border-radius: 20px;
+        height: 8px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
 
-/* FLASHCARD */
-.flashcard {
-  width: 100%; max-width: var(--card-w);
-  border-radius: var(--card-radius);
-  overflow: hidden; box-shadow: var(--shadow-md);
-  transition: box-shadow 0.25s, transform 0.25s;
-  border: 1px solid var(--ink-08); margin: 0 auto;
-}
-.flashcard:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .progress-bar-fill {
+        height: 100%;
+        border-radius: 20px;
+        background: linear-gradient(90deg, var(--calm-green), #22C55E);
+        transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        animation: progressFill 1s ease;
+    }
 
-.flashcard-front {
-  background: var(--card-front-bg); color: var(--card-front-color);
-  height: var(--card-face-h); padding: 20px 24px;
-  display: flex; flex-direction: column; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.flashcard-front .card-num {
-  position: absolute; top: 10px; right: 14px;
-  font-size: 10px; font-family: var(--font-mono); font-weight: 500; opacity: 0.25;
-}
-.flashcard-front .content {
-  font-size: var(--card-front-fs); font-weight: 700; line-height: 1.7;
-  overflow-y: auto;
-}
+    .progress-stats {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--text-light);
+    }
 
-.flashcard-fold { position: relative; height: 0; z-index: 2; }
-.flashcard-fold-line {
-  position: absolute; left: 0; right: 0; top: 0;
-  border: none; border-top: 2.5px dashed rgba(160,160,160,0.55);
-}
-.flashcard-fold .scissors {
-  position: absolute; left: 10px; top: -9px;
-  font-size: 13px; color: rgba(160,160,160,0.5); line-height: 1; z-index: 3;
-}
-.flashcard-fold .fold-text {
-  position: absolute; left: 50%; top: -8px; transform: translateX(-50%);
-  font-size: 8px; font-family: var(--font-mono); font-weight: 500;
-  color: rgba(160,160,160,0.45); letter-spacing: 0.5px;
-  background: var(--card-back-bg); padding: 0 8px; z-index: 3; white-space: nowrap;
-}
+    .progress-stats .count {
+        font-weight: 600;
+        color: var(--calm-green);
+    }
 
-.flashcard-back {
-  background: var(--card-back-bg); color: var(--card-back-color);
-  height: var(--card-face-h); padding: 20px 24px;
-  display: flex; flex-direction: column; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.flashcard-back .content {
-  font-size: var(--card-back-fs); line-height: 1.75; overflow-y: auto;
-}
-.flashcard-back .tag { margin-top: 8px; }
-.flashcard-back .tag span {
-  display: inline-block; font-size: 10px; font-family: var(--font-mono);
-  background: var(--mint-light); color: var(--mint);
-  padding: 2px 8px; border-radius: 4px; font-weight: 500;
-}
+    /* Name input area */
+    .name-section {
+        display: none;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+    }
 
-/* Empty */
-.empty-state { text-align: center; padding: 60px 24px; color: var(--ink-50); }
-.empty-state .icon { font-size: 52px; margin-bottom: 12px; opacity: 0.5; }
-.empty-state h3 { font-size: 16px; margin-bottom: 6px; color: var(--ink); }
-.empty-state p { font-size: 13px; max-width: 340px; margin: 0 auto; }
+    .name-section.show { display: block; }
 
-/* Mapping overlay */
-.mapping-overlay {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-  z-index: 300; align-items: center; justify-content: center; padding: 20px;
-}
-.mapping-overlay.active { display: flex; }
-.mapping-box {
-  background: var(--white); border-radius: var(--radius-lg);
-  padding: 28px; max-width: 480px; width: 100%; box-shadow: var(--shadow-lg);
-}
-.mapping-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
-.mapping-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-.mapping-group label {
-  display: block; font-size: 11px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-50); margin-bottom: 5px;
-}
-.mapping-group select {
-  width: 100%; padding: 9px 12px; border: 1px solid var(--ink-20);
-  border-radius: var(--radius); font-family: var(--font-body); font-size: 13px;
-  background: var(--paper); cursor: pointer; appearance: auto;
-}
-.mapping-tag-row { margin-bottom: 16px; }
-.mapping-tag-row select {
-  width: 100%; padding: 9px 12px; border: 1px solid var(--ink-20);
-  border-radius: var(--radius); font-family: var(--font-body); font-size: 13px;
-  background: var(--paper); cursor: pointer;
-}
+    .name-input-row {
+        display: flex;
+        gap: 8px;
+    }
 
-/* Intro panel section */
-.panel-intro {
-  padding: 20px 18px; text-align: center; color: var(--ink-50);
-}
-.panel-intro .icon { font-size: 36px; margin-bottom: 8px; opacity: 0.4; }
-.panel-intro p { font-size: 12px; line-height: 1.6; }
+    .name-input-row input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 2px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 15px;
+        font-family: 'Noto Sans TC', sans-serif;
+        outline: none;
+        transition: border-color 0.2s;
+    }
 
-/* Animation */
-@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-.flashcard { animation: fadeUp 0.3s ease both; }
-.flashcard:nth-child(2) { animation-delay: .03s; }
-.flashcard:nth-child(3) { animation-delay: .06s; }
-.flashcard:nth-child(4) { animation-delay: .08s; }
+    .name-input-row input:focus {
+        border-color: var(--calm-green);
+    }
 
-/* ===== PRINT ===== */
-@media print {
-  @page { size: A4; margin: 8mm; }
-  body {
-    background: white !important; overflow: visible !important; height: auto !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-  header, .panel, .stats-bar, .empty-state, .mapping-overlay {
-    display: none !important;
-  }
-  .app-body { display: block !important; height: auto !important; overflow: visible !important; }
-  .content-area { overflow: visible !important; padding: 0 !important; }
-  .cards-container { display: block !important; }
-  .cards-grid {
-    gap: 6mm !important;
-    grid-template-columns: repeat(var(--cards-per-row), 1fr) !important;
-  }
-  .flashcard {
-    break-inside: avoid !important; page-break-inside: avoid !important;
-    box-shadow: none !important; border: 1.5px solid #999 !important;
-    transform: none !important; animation: none !important;
-    max-width: 100% !important;
-  }
-  .flashcard:hover { box-shadow: none !important; transform: none !important; }
-  .flashcard-front { background: var(--card-front-bg) !important; color: var(--card-front-color) !important; }
-  .flashcard-back { background: var(--card-back-bg) !important; color: var(--card-back-color) !important; }
-  .flashcard-fold-line { border-top: 2px dashed #aaa !important; }
-  .flashcard-fold .scissors { color: #999 !important; }
-  .flashcard-fold .fold-text { color: #999 !important; }
-  .print-header {
-    display: block !important; text-align: center;
-    padding: 4px 0 8px; border-bottom: 2px solid #333; margin-bottom: 8px;
-  }
-  .print-header h2 { font-size: 13px; }
-  .print-header p { font-size: 9px; color: #666; }
-  body.hide-answers-print .flashcard-back .content { visibility: hidden !important; }
-  body.hide-answers-print .flashcard-back .tag { visibility: hidden !important; }
-}
-.print-header { display: none; }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 600;
+        font-family: 'Noto Sans TC', sans-serif;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .btn-primary {
+        background: var(--brown-dark);
+        color: white;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-outline {
+        background: white;
+        color: var(--brown-dark);
+        border: 1.5px solid var(--border);
+    }
+
+    .btn-outline:hover { border-color: var(--brown-dark); }
+
+    .btn-login {
+        width: 100%;
+        padding: 12px;
+        background: white;
+        color: var(--brown-dark);
+        border: 2px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 15px;
+    }
+
+    .btn-login:hover { border-color: var(--brown-dark); background: #FAFAFA; }
+
+    .user-greeting {
+        display: none;
+        font-size: 14px;
+        color: var(--brown);
+        margin-top: 12px;
+    }
+
+    .user-greeting.show { display: block; }
+    .user-greeting .name { font-weight: 700; color: var(--red-accent); }
+
+    /* ========== CATEGORY LEGEND ========== */
+    .legend {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-mid);
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
+    .legend-dot.connect { background: var(--connect-blue); }
+    .legend-dot.care { background: var(--care-red); }
+    .legend-dot.calm { background: var(--calm-green); }
+
+    /* ========== ACTION BUTTONS ========== */
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+    }
+
+    .action-buttons .btn {
+        font-size: 13px;
+        padding: 10px 16px;
+        border-radius: 24px;
+    }
+
+    .btn-google {
+        background: white;
+        color: var(--text-dark);
+        border: 1.5px solid #E0E0E0;
+    }
+
+    .btn-iphone {
+        background: white;
+        color: var(--text-dark);
+        border: 1.5px solid #E0E0E0;
+    }
+
+    .btn-line {
+        background: #06C755;
+        color: white;
+        border: none;
+    }
+
+    /* ========== CALENDAR GRID (Desktop) ========== */
+    .calendar-grid {
+        display: none;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        margin-bottom: 32px;
+        background: white;
+        border-radius: var(--radius);
+        padding: 16px;
+        box-shadow: var(--card-shadow);
+    }
+
+    @media (min-width: 640px) {
+        .calendar-grid { display: grid; }
+        .day-list-title { display: none; }
+    }
+
+    .cal-header {
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-light);
+        padding: 8px 0;
+    }
+
+    .cal-day {
+        text-align: center;
+        padding: 8px 4px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        min-height: 48px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+    }
+
+    .cal-day:hover { background: var(--cream); }
+    .cal-day.today { background: var(--care-bg); font-weight: 700; }
+    .cal-day.checked::after {
+        content: '✓';
+        position: absolute;
+        top: 2px;
+        right: 4px;
+        font-size: 10px;
+        color: var(--calm-green);
+        font-weight: 700;
+    }
+
+    .cal-day .num {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .cal-day .lunar {
+        font-size: 9px;
+        color: var(--text-light);
+    }
+
+    .cal-day .cat-dots {
+        display: flex;
+        gap: 2px;
+        margin-top: 2px;
+    }
+
+    .cat-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+    }
+
+    /* ========== DAY LIST (Mobile) ========== */
+    .day-list-title {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--brown-light);
+        margin-bottom: 12px;
+        padding-left: 4px;
+    }
+
+    .day-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+        .day-list { gap: 10px; }
+    }
+
+    .day-item {
+        background: white;
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: var(--card-shadow);
+        cursor: pointer;
+        transition: all 0.25s;
+        animation: slideUp 0.4s ease forwards;
+        opacity: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .day-item:hover {
+        box-shadow: var(--card-shadow-hover);
+        transform: translateY(-2px);
+    }
+
+    .day-item.checked {
+        border-left: 4px solid var(--calm-green);
+    }
+
+    .day-item .date-col {
+        text-align: center;
+        min-width: 44px;
+        flex-shrink: 0;
+    }
+
+    .day-item .date-num {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--red-accent);
+        line-height: 1;
+    }
+
+    .day-item .date-weekday {
+        font-size: 12px;
+        color: var(--text-light);
+        margin-top: 2px;
+    }
+
+    .day-item .divider {
+        width: 1px;
+        height: 36px;
+        background: var(--border);
+        flex-shrink: 0;
+    }
+
+    .day-item .content-col {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .day-item .lunar-label {
+        font-size: 11px;
+        color: var(--text-light);
+        margin-bottom: 2px;
+    }
+
+    .day-item .title {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text-dark);
+        line-height: 1.4;
+    }
+
+    .day-item .tags {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 10px;
+        letter-spacing: 0.5px;
+    }
+
+    .tag.connect { background: var(--connect-bg); color: var(--connect-blue); }
+    .tag.care { background: var(--care-bg); color: var(--care-red); }
+    .tag.calm { background: var(--calm-bg); color: var(--calm-green); }
+
+    .day-item .arrow {
+        color: var(--text-light);
+        font-size: 18px;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+    }
+
+    .day-item:hover .arrow { transform: translateX(3px); }
+
+    /* ========== DAY DETAIL PAGE ========== */
+    .detail-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: white;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .detail-overlay.active {
+        display: block;
+        animation: slideIn 0.35s ease;
+    }
+
+    .detail-overlay.closing {
+        animation: slideOut 0.3s ease forwards;
+    }
+
+    .detail-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        border-bottom: 1px solid var(--border);
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 10;
+    }
+
+    .detail-back {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: var(--cream);
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background 0.2s;
+    }
+
+    .detail-back:hover { background: var(--cream-dark); }
+
+    .detail-header-title {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--brown-dark);
+        flex: 1;
+    }
+
+    .detail-body {
+        padding: 24px 20px 100px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .detail-date-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--cream);
+        border-radius: 24px;
+        padding: 6px 16px;
+        font-size: 13px;
+        color: var(--brown);
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    .detail-title {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--brown-dark);
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    .detail-tags {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 28px;
+    }
+
+    .detail-section {
+        margin-bottom: 28px;
+    }
+
+    .detail-section-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--brown-light);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 12px;
+    }
+
+    .detail-section-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    .detail-quiet {
+        background: var(--calm-bg);
+        border-radius: var(--radius);
+        padding: 20px;
+        font-size: 15px;
+        color: var(--text-mid);
+        line-height: 1.9;
+        border-left: 4px solid var(--calm-green);
+    }
+
+    .detail-verse {
+        background: linear-gradient(135deg, #FFFBF0, #FFF8E8);
+        border-radius: var(--radius);
+        padding: 24px;
+        border-left: 4px solid var(--gold);
+    }
+
+    .detail-verse .verse-text {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-dark);
+        line-height: 1.9;
+        margin-bottom: 8px;
+    }
+
+    .detail-verse .verse-ref {
+        font-size: 13px;
+        color: var(--gold);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-prayer {
+        background: var(--care-bg);
+        border-radius: var(--radius);
+        padding: 20px;
+        border-left: 4px solid var(--care-red);
+    }
+
+    .detail-prayer .prayer-text {
+        font-size: 15px;
+        color: var(--text-mid);
+        line-height: 1.9;
+    }
+
+    .detail-checkin-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 16px;
+        border-radius: var(--radius);
+        font-size: 17px;
+        font-weight: 700;
+        font-family: 'Noto Sans TC', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid var(--calm-green);
+        background: white;
+        color: var(--calm-green);
+        margin-top: 32px;
+    }
+
+    .detail-checkin-btn:hover {
+        background: var(--calm-bg);
+        transform: translateY(-2px);
+    }
+
+    .detail-checkin-btn.checked {
+        background: var(--calm-green);
+        color: white;
+        border-color: var(--calm-green);
+        pointer-events: none;
+    }
+
+    /* ========== TOAST ========== */
+    .toast {
+        position: fixed;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-100px);
+        background: var(--brown-dark);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 9999;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ========== FOOTER ========== */
+    .footer {
+        text-align: center;
+        padding: 24px 16px 40px;
+        font-size: 12px;
+        color: var(--text-light);
+    }
+
+    /* ========== CONFETTI ========== */
+    .confetti-piece {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        z-index: 9998;
+        pointer-events: none;
+        animation: confetti 1.2s ease forwards;
+    }
+
+    /* ========== SCRATCH CARD ========== */
+    .scratch-section {
+        margin: 24px 0;
+    }
+
+    .scratch-section-title {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--brown-dark);
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .scratch-section-desc {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-light);
+        margin-bottom: 16px;
+    }
+
+    .scratch-card {
+        position: relative;
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 5;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--card-shadow-hover);
+        background: white;
+    }
+
+    .scratch-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px 22px;
+        text-align: center;
+        background: linear-gradient(160deg, #FFFDF7 0%, #FFF5E6 50%, #FFF0D6 100%);
+    }
+
+    .scratch-content .sc-emoji { font-size: 36px; margin-bottom: 12px; }
+
+    .scratch-content .sc-verse {
+        font-family: 'Noto Serif TC', serif;
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-dark);
+        line-height: 1.9;
+        margin-bottom: 8px;
+    }
+
+    .scratch-content .sc-ref {
+        font-size: 13px;
+        color: var(--gold);
+        font-weight: 600;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
+
+    .scratch-content .sc-divider {
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        margin: 0 auto 14px;
+    }
+
+    .scratch-content .sc-prayer-label {
+        font-size: 12px;
+        color: var(--care-red);
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+    }
+
+    .scratch-content .sc-prayer {
+        font-size: 14px;
+        color: var(--text-mid);
+        line-height: 1.8;
+        max-width: 300px;
+    }
+
+    .scratch-canvas {
+        position: absolute;
+        inset: 0;
+        cursor: pointer;
+        touch-action: none;
+        z-index: 2;
+    }
+
+    .scratch-hint {
+        position: absolute;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .scratch-hint.hidden { display: none; }
+
+    @keyframes gentlePulse {
+        0%, 100% { transform: translateX(-50%) scale(1); }
+        50% { transform: translateX(-50%) scale(1.05); }
+    }
+
+    .scratch-hint { animation: gentlePulse 2s ease-in-out infinite; }
+
+    .scratch-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 16px;
+    }
+
+    .scratch-actions .btn { font-size: 14px; padding: 10px 20px; border-radius: 24px; }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 400px) {
+        .header h1 { font-size: 26px; }
+        .header h1 .accent { font-size: 30px; }
+        .day-item .title { font-size: 15px; }
+        .detail-title { font-size: 24px; }
+    }
 </style>
+```
+
 </head>
 <body>
 
-<!-- ===== HEADER with upload ===== -->
-<header>
-  <div class="header-inner">
-    <div class="logo">
-      <div class="logo-icon">🃏</div>
-      <h1>Flash<span>Forge</span></h1>
-    </div>
+<div class="toast" id="toast"></div>
 
-    <div class="header-upload" id="headerUpload">
-      <div class="header-upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">
-        📄 上傳 CSV
-        <input type="file" id="fileInput" accept=".csv,.tsv,.txt">
-      </div>
-    </div>
+<!-- ====== HEADER ====== -->
 
-    <div class="header-tag">NotebookLM CSV → 閃卡</div>
-  </div>
-</header>
+<div class="header">
+    <h1><span class="accent">3C</span> 陪你過年不 NG</h1>
+    <p class="subtitle">讓『3C』不再只有冷漠，而是帶來愛的溫度</p>
+</div>
 
-<!-- ===== APP BODY ===== -->
-<div class="app-body">
+<!-- ====== MAIN CONTAINER ====== -->
 
-  <!-- LEFT PANEL -->
-  <aside class="panel" id="panel">
+<div class="container">
 
-    <!-- Intro / Sample -->
-    <div class="panel-section" id="panelIntro">
-      <div class="panel-intro">
-        <div class="icon">🃏</div>
-        <p>從頂部上傳 NotebookLM 匯出嘅 CSV 檔案，或者載入示範資料試試</p>
-      </div>
-      <button class="btn btn-sample" onclick="loadSampleData()">📋 載入示範資料</button>
-    </div>
+```
+<!-- Progress Card -->
+<div class="progress-card">
+    <div class="trophy">🏆</div>
+    <h3>追蹤靈修進度</h3>
+    <p class="desc" id="progressDesc">輸入名字即可記錄每日靈修打卡，追蹤您的進度</p>
 
-    <!-- Dimensions -->
-    <div class="panel-section hidden-section" id="secDim">
-      <div class="panel-title">📐 卡片尺寸</div>
-      <div class="ctrl-group">
-        <div class="ctrl-label">卡片闊度 <span class="val" id="valW">380px</span></div>
-        <input type="range" min="240" max="560" value="380" oninput="setVar('--card-w',this.value+'px');Q('#valW').textContent=this.value+'px'">
-      </div>
-      <div class="ctrl-group">
-        <div class="ctrl-label">卡片高度（正面＝背面）<span class="val" id="valH">180px</span></div>
-        <input type="range" min="80" max="350" value="180" oninput="setVar('--card-face-h',this.value+'px');Q('#valH').textContent=this.value+'px'">
-      </div>
-    </div>
-
-    <!-- Front color -->
-    <div class="panel-section hidden-section" id="secFrontColor">
-      <div class="panel-title">🎨 正面顏色（問題）</div>
-      <div class="swatch-grid" id="frontSwatches"></div>
-      <div class="custom-color-row">
-        <input type="color" id="cFrontBg" value="#2d2d2d" onchange="setFrontCustom(this.value)">
-        <span>背景</span>
-        <input type="color" id="cFrontTx" value="#f0f0f0" onchange="setVar('--card-front-color',this.value)" style="margin-left:auto">
-        <span>文字</span>
-      </div>
-    </div>
-
-    <!-- Back color -->
-    <div class="panel-section hidden-section" id="secBackColor">
-      <div class="panel-title">🎨 背面顏色（答案）</div>
-      <div class="swatch-grid" id="backSwatches"></div>
-      <div class="custom-color-row">
-        <input type="color" id="cBackBg" value="#ffffff" onchange="setBackCustom(this.value)">
-        <span>背景</span>
-        <input type="color" id="cBackTx" value="#2d2d2d" onchange="setVar('--card-back-color',this.value)" style="margin-left:auto">
-        <span>文字</span>
-      </div>
-    </div>
-
-    <!-- Font -->
-    <div class="panel-section hidden-section" id="secFont">
-      <div class="panel-title">🔤 字體大小</div>
-      <div class="ctrl-group">
-        <div class="ctrl-label">問題字體 <span class="val" id="valFFS">18px</span></div>
-        <input type="range" min="12" max="32" value="18" oninput="setVar('--card-front-fs',this.value+'px');Q('#valFFS').textContent=this.value+'px'">
-      </div>
-      <div class="ctrl-group">
-        <div class="ctrl-label">答案字體 <span class="val" id="valBFS">16px</span></div>
-        <input type="range" min="10" max="28" value="16" oninput="setVar('--card-back-fs',this.value+'px');Q('#valBFS').textContent=this.value+'px'">
-      </div>
-    </div>
-
-    <!-- Layout -->
-    <div class="panel-section hidden-section" id="secLayout">
-      <div class="panel-title">📋 版面設定</div>
-      <div class="ctrl-group">
-        <div class="ctrl-label" style="margin-bottom:8px">每行幾張</div>
-        <div class="per-page-btns">
-          <button class="pp-btn active" onclick="setCols(1,this)">1</button>
-          <button class="pp-btn" onclick="setCols(2,this)">2</button>
-          <button class="pp-btn" onclick="setCols(3,this)">3</button>
+    <!-- Before login -->
+    <div id="loginSection">
+        <div class="name-input-row">
+            <input type="text" id="nameInput" placeholder="輸入你的名字" maxlength="20">
+            <button class="btn btn-primary" onclick="login()">開始打卡</button>
         </div>
-      </div>
-      <div class="ctrl-group">
-        <div class="ctrl-label">卡片間距 <span class="val" id="valGap">24px</span></div>
-        <input type="range" min="4" max="48" value="24" oninput="setVar('--card-gap',this.value+'px');Q('#valGap').textContent=this.value+'px'">
-      </div>
-      <div style="margin-top:10px">
-        <label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">
-          <input type="checkbox" onchange="document.body.classList.toggle('hide-answers-print',this.checked)">
-          列印時隱藏答案（摺疊後先睇到）
-        </label>
-      </div>
     </div>
 
-    <!-- Actions -->
-    <div class="panel-actions hidden-section" id="secActions">
-      <button class="btn btn-ghost" onclick="toggleAnswers()">👁 顯示 / 隱藏答案</button>
-      <button class="btn btn-print" onclick="window.print()">🖨 列印 / 儲存 PDF</button>
+    <!-- After login -->
+    <div id="loggedInSection" style="display:none">
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="progress-stats">
+            <span><span class="count" id="checkedCount">0</span> / 28 天已完成</span>
+            <span id="percentText">0%</span>
+        </div>
+        <p class="user-greeting show" id="userGreeting">
+            👋 <span class="name" id="displayName"></span>，願主賜福你今天的靈修！
+            <button style="background:none;border:none;color:var(--text-light);font-size:12px;cursor:pointer;margin-left:4px" onclick="logout()">登出</button>
+        </p>
     </div>
+</div>
 
-  </aside>
-
-  <!-- RIGHT CONTENT -->
-  <div class="content-area">
-    <div class="stats-bar" id="statsBar">
-      <div class="stat-item"><div class="stat-num" id="statTotal">0</div><div class="stat-label">張閃卡</div></div>
-      <div class="stat-item"><div class="stat-num" id="statTags">0</div><div class="stat-label">個分類</div></div>
+<!-- Scratch Card Section -->
+<div class="scratch-section" id="scratchSection">
+    <div class="scratch-section-title">✨ 今日祝福刮刮包</div>
+    <div class="scratch-section-desc">刮開金色覆蓋層，領受今天的祝福</div>
+    <div class="scratch-card" id="scratchCard">
+        <div class="scratch-content" id="scratchContent">
+            <span class="sc-emoji" id="scEmoji">📖</span>
+            <p class="sc-verse" id="scVerse"></p>
+            <p class="sc-ref" id="scRef"></p>
+            <div class="sc-divider"></div>
+            <p class="sc-prayer-label">🙏 禱 告</p>
+            <p class="sc-prayer" id="scPrayer"></p>
+        </div>
+        <canvas class="scratch-canvas" id="scratchCanvas"></canvas>
+        <div class="scratch-hint" id="scratchHint">👆 用手指刮開</div>
     </div>
-
-    <div class="cards-container" id="cardsContainer">
-      <div class="print-header">
-        <h2 id="printTitle">FlashForge 閃卡</h2>
-        <p id="printMeta"></p>
-      </div>
-      <div class="cards-grid" id="cardsGrid"></div>
+    <div class="scratch-actions" id="scratchActions" style="display:none">
+        <button class="btn btn-outline" onclick="scratchAgain()">🎁 再刮一次</button>
+        <button class="btn btn-outline" onclick="shareScratch()">📤 分享祝福</button>
     </div>
+</div>
 
-    <div class="empty-state" id="emptyState">
-      <div class="icon">🃏</div>
-      <h3>上傳 CSV 開始製作閃卡</h3>
-      <p>從頂部上傳 NotebookLM 匯出嘅 CSV，或者點左邊「載入示範資料」試試</p>
-    </div>
-  </div>
+<!-- Legend -->
+<div class="legend">
+    <div class="legend-item"><div class="legend-dot connect"></div><span>Connect 連結</span></div>
+    <div class="legend-item"><div class="legend-dot care"></div><span>Care 關心</span></div>
+    <div class="legend-item"><div class="legend-dot calm"></div><span>Calm 安靜</span></div>
+</div>
+
+<!-- Action Buttons -->
+<div class="action-buttons">
+    <button class="btn btn-google" onclick="addGoogleCal()">📅 加入 Google 日曆</button>
+    <button class="btn btn-iphone" onclick="addIphoneCal()">📱 加入 iPhone 行事曆</button>
+</div>
+
+<!-- Calendar Grid (Desktop) -->
+<div class="calendar-grid" id="calendarGrid"></div>
+
+<!-- Day List Title (Mobile) -->
+<div class="day-list-title">📅 2026 年 2 月 靈修月曆</div>
+
+<!-- Day List -->
+<div class="day-list" id="dayList"></div>
+
+<!-- Footer -->
+<div class="footer">
+    ©台北真理堂版權 Taipei Truth Lutheran Church 所有。
+</div>
+```
 
 </div>
 
-<!-- Mapping overlay -->
-<div class="mapping-overlay" id="mappingOverlay">
-  <div class="mapping-box">
-    <h3>🔗 欄位對應</h3>
-    <div class="mapping-row">
-      <div class="mapping-group"><label>正面（問題）</label><select id="mapFront"></select></div>
-      <div class="mapping-group"><label>背面（答案）</label><select id="mapBack"></select></div>
+<!-- ====== DAY DETAIL OVERLAY ====== -->
+
+<div class="detail-overlay" id="detailOverlay">
+    <div class="detail-header">
+        <button class="detail-back" onclick="closeDetail()">←</button>
+        <div class="detail-header-title" id="detailHeaderTitle"></div>
     </div>
-    <div class="mapping-tag-row">
-      <div class="mapping-group"><label>分類標籤（選填）</label><select id="mapTag"></select></div>
-    </div>
-    <button class="btn btn-primary" onclick="applyMapping()" style="width:100%">✅ 確認並生成閃卡</button>
-  </div>
+    <div class="detail-body" id="detailBody"></div>
 </div>
 
 <script>
-const Q = s => document.querySelector(s);
-const QQ = s => document.querySelectorAll(s);
-function setVar(n,v){ document.documentElement.style.setProperty(n,v); }
+// ============================================================
+//  DATA: 28 Days of February 2026
+// ============================================================
+const WEEKDAYS = ['日','一','二','三','四','五','六'];
 
-/* ===== PRESETS ===== */
-const FRONT_P = [
-  {bg:'#2d2d2d',tx:'#f0f0f0'},{bg:'#1a1a2e',tx:'#e0e0e0'},{bg:'#0d1b2a',tx:'#e0e1dd'},
-  {bg:'#1b263b',tx:'#d1d5db'},{bg:'#283618',tx:'#fefae0'},{bg:'#3c1518',tx:'#f0d9d9'},
-  {bg:'#4a1942',tx:'#f3d5f0'},{bg:'#212529',tx:'#dee2e6'},{bg:'#1e3a5f',tx:'#d6e6f2'},
-  {bg:'#2c3e50',tx:'#ecf0f1'},{bg:'#4a5568',tx:'#edf2f7'},{bg:'#744210',tx:'#fefcbf'},
-  {bg:'#553c9a',tx:'#e9d8fd'},{bg:'#234e52',tx:'#b2f5ea'},
-  {bg:'#ffffff',tx:'#1a1a2e',light:true},{bg:'#f0f0f0',tx:'#2d2d2d',light:true},
-  {bg:'#1a365d',tx:'#bee3f8'},{bg:'#22543d',tx:'#c6f6d5'},
-  {bg:'#742a2a',tx:'#fed7d7'},{bg:'#975a16',tx:'#fefcbf'},{bg:'#2a4365',tx:'#90cdf4'},
+const DAYS_DATA = [
+    {
+        day: 1, weekday: '日', lunar: '', title: '預備的心',
+        categories: ['calm'],
+        quiet: '在新月份的開始，讓我們安靜下來，預備一顆柔軟的心。花五分鐘深呼吸，感受神的同在。放下手機、放下忙碌，讓自己真正地安靜在主面前。',
+        verse: '「你們要休息，要知道我是神！」',
+        verseRef: '詩篇 46:10',
+        prayer: '親愛的天父，在新的一個月開始，求祢預備我的心。讓我在忙碌中學會安靜，在嘈雜中聽見祢的聲音。奉主耶穌的名禱告，阿們。'
+    },
+    {
+        day: 2, weekday: '一', lunar: '', title: '放下重擔',
+        categories: ['calm'],
+        quiet: '我們每個人心中都背負著不同的重擔——工作壓力、人際關係、對未來的焦慮。今天，練習把這些重擔一一交給神。寫下三件讓你感到沉重的事，然後在禱告中交託。',
+        verse: '「凡勞苦擔重擔的人，可以到我這裡來，我就使你們得安息。」',
+        verseRef: '馬太福音 11:28',
+        prayer: '主耶穌，感謝祢邀請我到祢面前。我把心中的重擔交給祢，求祢用祢的平安取代我的焦慮。阿們。'
+    },
+    {
+        day: 3, weekday: '二', lunar: '', title: '感恩的心',
+        categories: ['calm'],
+        quiet: '感恩能改變我們看待生活的眼光。今天，寫下五件你感恩的事。它們可以很小——一杯熱茶、一個微笑、一次平安到家。讓感恩成為你面對過年的基調。',
+        verse: '「凡事謝恩，因為這是神在基督耶穌裡向你們所定的旨意。」',
+        verseRef: '帖撒羅尼迦前書 5:18',
+        prayer: '天父，感謝祢賜給我的一切。求祢給我一雙看見恩典的眼睛，在每天的日常中發現祢的美好。阿們。'
+    },
+    {
+        day: 4, weekday: '三', lunar: '', title: '饒恕的力量',
+        categories: ['calm'],
+        quiet: '過年免不了見到許多親友，也可能觸碰到過去的傷痛。饒恕不是否認傷害，而是選擇不讓傷害繼續綑綁自己。今天，求神給你力量，開始一段饒恕的旅程。',
+        verse: '「你們饒恕人的過犯，你們的天父也必饒恕你們的過犯。」',
+        verseRef: '馬太福音 6:14',
+        prayer: '主啊，饒恕對我來說很難。但我願意倚靠祢的力量，選擇放下。求祢醫治我心中的傷口，讓我在愛中得自由。阿們。'
+    },
+    {
+        day: 5, weekday: '四', lunar: '', title: '盼望的眼光',
+        categories: ['calm'],
+        quiet: '當我們用盼望的眼光看待生活，困難就不再是終點，而是成長的契機。想像一下，今年過年你希望有什麼不同？帶著盼望去期待。',
+        verse: '「我知道我向你們所懷的意念是賜平安的意念，不是降災禍的意念，要叫你們末後有指望。」',
+        verseRef: '耶利米書 29:11',
+        prayer: '天父，感謝祢對我的美好計劃。即使我看不見前方的路，但我相信祢的帶領。求祢賜我盼望的眼光。阿們。'
+    },
+    {
+        day: 6, weekday: '五', lunar: '', title: '愛的源頭',
+        categories: ['calm'],
+        quiet: '真正的愛不是出於我們自己，而是源自於神。在過年期間，我們需要很多的愛——愛家人、愛自己、也愛那些不太容易愛的人。讓我們先回到愛的源頭。',
+        verse: '「我們愛，因為神先愛我們。」',
+        verseRef: '約翰一書 4:19',
+        prayer: '主啊，祢就是愛的源頭。求祢讓祢的愛充滿我，使我在過年期間能用祢的愛去愛身邊的人。阿們。'
+    },
+    {
+        day: 7, weekday: '六', lunar: '', title: '信心的腳步',
+        categories: ['calm'],
+        quiet: '第一週即將結束，願你這週有更多安靜的時間與神親近。信心不是看見才相信，是在看不見的時候依然前行。帶著第一週累積的信心，預備迎接接下來的日子。',
+        verse: '「信就是所望之事的實底，是未見之事的確據。」',
+        verseRef: '希伯來書 11:1',
+        prayer: '天父，即使前路未明，我選擇信靠祢。求祢堅固我的信心，讓我每一步都踏在祢的應許上。阿們。'
+    },
+    {
+        day: 8, weekday: '日', lunar: '', title: '預備好了',
+        categories: ['calm'],
+        quiet: '距離過年只剩一週，你準備好了嗎？不只是年貨和打掃，更重要的是心靈的準備。今天，花時間整理自己的內心，把不平安的事交給神。',
+        verse: '「所以，不要為明天憂慮，因為明天自有明天的憂慮；一天的難處一天當就夠了。」',
+        verseRef: '馬太福音 6:34',
+        prayer: '主耶穌，求祢幫助我不要為過年的準備焦慮。讓我把眼光放在祢身上，一步一步來。阿們。'
+    },
+    {
+        day: 9, weekday: '一', lunar: '', title: '建立界線',
+        categories: ['calm'],
+        quiet: '過年時，「界線」是保護自己的重要工具。面對過度的詢問或壓力，你可以溫柔而堅定地設立界線。記住：說「不」不代表不愛對方。',
+        verse: '「你要保守你心，勝過保守一切，因為一生的果效，是由心發出。」',
+        verseRef: '箴言 4:23',
+        prayer: '天父，求祢給我智慧，知道何時該說好、何時該說不。讓我在保護自己的同時，也不失去愛人的心。阿們。'
+    },
+    {
+        day: 10, weekday: '二', lunar: '', title: '真實的愛',
+        categories: ['calm'],
+        quiet: '真實的愛是真誠的、不虛假的。過年期間，讓我們少一些客套、多一些真心。想想有沒有一個人，你可以今天對他說一句真心話？',
+        verse: '「愛人不可虛假，惡要厭惡，善要親近。」',
+        verseRef: '羅馬書 12:9',
+        prayer: '主啊，求祢幫助我活出真實的愛。讓我不是為了應付而愛，而是從心底真誠地關心身邊的人。阿們。'
+    },
+    {
+        day: 11, weekday: '三', lunar: '', title: '誠實溝通',
+        categories: ['calm'],
+        quiet: '很多家庭衝突來自於溝通不良。今天練習「我訊息」：不是說「你總是…」，而是說「我感覺…」。用溫柔而誠實的方式表達自己。',
+        verse: '「說話浮躁的，如刀刺人；智慧人的舌頭，卻為醫人的良藥。」',
+        verseRef: '箴言 12:18',
+        prayer: '主啊，求祢管理我的口舌。讓我說的每句話都帶著恩典和智慧，成為醫治而不是傷害。阿們。'
+    },
+    {
+        day: 12, weekday: '四', lunar: '', title: '接納不完美',
+        categories: ['calm'],
+        quiet: '家人不完美、自己也不完美——而這就是我們需要恩典的原因。今天，練習接納：接納家人的不完美，也接納自己的不完美。',
+        verse: '「我的恩典夠你用的，因為我的能力是在人的軟弱上顯得完全。」',
+        verseRef: '哥林多後書 12:9',
+        prayer: '天父，感謝祢接納不完美的我。求祢幫助我也用恩典的眼光看待家人，在不完美中看見祢的完美。阿們。'
+    },
+    {
+        day: 13, weekday: '五', lunar: '', title: '獨處的力量',
+        categories: ['calm'],
+        quiet: '過年期間人多嘈雜，但別忘了給自己獨處的空間。即使只有十分鐘，找個安靜的角落，深呼吸，與神對話。獨處不是孤單，是充電。',
+        verse: '「但耶穌卻退到曠野去禱告。」',
+        verseRef: '路加福音 5:16',
+        prayer: '主耶穌，祢也需要獨處的時間。求祢幫助我在過年的熱鬧中，找到與祢安靜相處的時刻。阿們。'
+    },
+    {
+        day: 14, weekday: '六', lunar: '', title: '愛的界線',
+        categories: ['calm'],
+        quiet: '明天就是小年夜了！帶著這兩週累積的預備，你已經比之前更有裝備了。記住：帶著愛去設立界線，帶著恩典去面對關係。',
+        verse: '「最要緊的是彼此切實相愛，因為愛能遮掩許多的罪。」',
+        verseRef: '彼得前書 4:8',
+        prayer: '天父，明天就要開始過年了。求祢用祢的愛覆蓋我的家庭，讓這個年成為充滿恩典的時光。阿們。'
+    },
+    {
+        day: 15, weekday: '日', lunar: '小年夜', title: 'Coming Home!',
+        categories: ['connect', 'care', 'calm'],
+        quiet: '小年夜了！不管你是在回家的路上，還是已經到家，花一點時間安靜自己的心。深呼吸三次，讓回家的感覺溫暖你。',
+        verse: '「看哪，我站在門外叩門，若有聽見我聲音就開門的，我要進到他那裡去，我與他，他與我，一同坐席。」',
+        verseRef: '啟示錄 3:20',
+        prayer: '主耶穌，感謝祢帶我回家。不只是回到地上的家，更是回到祢的愛裡。求祢與我們的家同在。阿們。'
+    },
+    {
+        day: 16, weekday: '一', lunar: '除夕', title: '除舊佈新！',
+        categories: ['connect', 'care', 'calm'],
+        quiet: '除夕夜，不只是外在的除舊佈新，也是內心的更新。今天，放下去年的遺憾和傷痛，帶著盼望迎接新的一年。',
+        verse: '「若有人在基督裡，他就是新造的人，舊事已過，都變成新的了。」',
+        verseRef: '哥林多後書 5:17',
+        prayer: '天父，感謝祢讓我們在基督裡成為新造的人。在這個除夕夜，求祢更新我們全家，除去舊有的重擔，迎接新的恩典。阿們。'
+    },
+    {
+        day: 17, weekday: '二', lunar: '初一', title: '新的一年從C開始',
+        categories: ['connect', 'care', 'calm'],
+        quiet: '新年第一天！今年的 3C 從今天開始——Connect 與神連結、Care 彼此關心、Calm 內心安靜。選一個字作為你今年的座右銘。',
+        verse: '「這是耶和華所定的日子，我們在其中要高興歡喜！」',
+        verseRef: '詩篇 118:24',
+        prayer: '主啊，新年新氣象！感謝祢賜下新的一年，求祢幫助我在每一天都活出 Connect、Care、Calm 的生活。阿們。'
+    },
+    {
+        day: 18, weekday: '三', lunar: '初二', title: '親戚見面笑CC',
+        categories: ['connect', 'care', 'calm'],
+        quiet: '初二回娘家（或見親戚）的日子。面對各種問候和關心，帶著微笑和恩典回應。記住你預備好的界線，也記住愛。',
+        verse: '「回答柔和，使怒消退；言語暴戾，觸動怒氣。」',
+        verseRef: '箴言 15:1',
+        prayer: '主耶穌，面對親戚的各種問候，求祢給我智慧和幽默感。讓我用柔和的回答化解尷尬，用愛連結家人。阿們。'
+    },
+    {
+        day: 19, weekday: '四', lunar: '初三', title: '似乎累累的',
+        categories: ['connect', 'care', 'calm'],
+        quiet: '過年到第三天，可能已經有點疲累了。沒關係，累了就休息。不需要勉強自己一直社交，給自己一些喘息的空間。',
+        verse: '「他使我躺臥在青草地上，領我在可安歇的水邊。他使我的靈魂甦醒。」',
+        verseRef: '詩篇 23:2-3',
+        prayer: '主啊，我有點累了。求祢做我的牧者，帶我到可安歇的地方。在休息中恢復我的力量和喜樂。阿們。'
+    },
+    {
+        day: 20, weekday: '五', lunar: '初四', title: '收心不用一下子完成',
+        categories: ['connect', 'care', 'calm'],
+        quiet: '慢慢收心就好，不需要一下子從過年模式切換到工作模式。給自己一些緩衝的時間，像是慢慢調節水溫一樣。',
+        verse: '「但那等候耶和華的必重新得力。他們必如鷹展翅上騰；他們奔跑卻不困倦，行走卻不疲乏。」',
+        verseRef: '以賽亞書 40:31',
+        prayer: '天父，求祢幫助我在收假的過程中不焦急。讓我在等候中重新得力，預備好心迎接新的開始。阿們。'
+    },
+    {
+        day: 21, weekday: '六', lunar: '初五', title: '耶穌會陪你！',
+        categories: ['connect', 'care', 'calm'],
+        quiet: '過年假期接近尾聲。不管這個年過得如何——開心的、辛苦的、複雜的——耶穌都在。祂不只陪你過年，也陪你過每一天。',
+        verse: '「我總不撇下你，也不丟棄你。」',
+        verseRef: '希伯來書 13:5',
+        prayer: '主耶穌，感謝祢一直都在。不管過年發生了什麼，祢都陪著我走過。求祢繼續帶領我接下來的每一天。阿們。'
+    },
+    {
+        day: 22, weekday: '日', lunar: '', title: '回到日常',
+        categories: ['calm'],
+        quiet: '假期結束了，回到日常生活。帶著過年期間學到的功課——安靜、感恩、界線、饒恕——繼續走每天的路。',
+        verse: '「你們要常在我裡面，我也常在你們裡面。枝子若不常在葡萄樹上，自己就不能結果子；你們若不常在我裡面，也是這樣。」',
+        verseRef: '約翰福音 15:4',
+        prayer: '主啊，回到日常了。求祢幫助我繼續住在祢裡面，在每天的工作和生活中結出好果子。阿們。'
+    },
+    {
+        day: 23, weekday: '一', lunar: '', title: '勇敢面對',
+        categories: ['calm'],
+        quiet: '也許過年期間留下了一些需要處理的事情——一段對話、一個決定、一份感受。今天，帶著勇氣去面對。神與你同在。',
+        verse: '「我豈沒有吩咐你嗎？你當剛強壯膽！不要懼怕，也不要驚惶；因為你無論往哪裡去，耶和華你的神必與你同在。」',
+        verseRef: '約書亞記 1:9',
+        prayer: '天父，有些事我一直在逃避。求祢賜我勇氣去面對，因為我知道祢與我同在，我不需要害怕。阿們。'
+    },
+    {
+        day: 24, weekday: '二', lunar: '', title: '智慧的心',
+        categories: ['calm'],
+        quiet: '面對生活中的各種選擇和挑戰，我們需要從神而來的智慧。智慧不只是聰明，更是知道什麼是對的、什麼是好的、什麼是神喜悅的。',
+        verse: '「你們中間若有缺少智慧的，應當求那厚賜與眾人、也不斥責人的神，主就必賜給他。」',
+        verseRef: '雅各書 1:5',
+        prayer: '主啊，我需要祢的智慧。求祢在我每天的決定中引導我，讓我行在祢的旨意中。阿們。'
+    },
+    {
+        day: 25, weekday: '三', lunar: '', title: '喜樂的心',
+        categories: ['calm'],
+        quiet: '喜樂不是因為環境順利，而是因為知道神掌權。今天，即使面對困難，也選擇喜樂。這不是假裝，而是信心的操練。',
+        verse: '「喜樂的心乃是良藥；憂傷的靈使骨枯乾。」',
+        verseRef: '箴言 17:22',
+        prayer: '天父，求祢將喜樂的心賜給我。讓這份從祢而來的喜樂成為我生命的力量和醫治。阿們。'
+    },
+    {
+        day: 26, weekday: '四', lunar: '', title: '謙卑同行',
+        categories: ['calm'],
+        quiet: '謙卑不是看輕自己，而是不過度看重自己。在與人相處中，謙卑讓我們能聆聽、能學習、能成長。',
+        verse: '「世人哪，耶和華已指示你何為善。他向你所要的是什麼呢？只要你行公義，好憐憫，存謙卑的心，與你的神同行。」',
+        verseRef: '彌迦書 6:8',
+        prayer: '主啊，求祢給我一顆謙卑的心。讓我在與人同行中不驕傲，也讓我在與祢同行中更加親近祢。阿們。'
+    },
+    {
+        day: 27, weekday: '五', lunar: '', title: '不住禱告',
+        categories: ['calm'],
+        quiet: '禱告不只是閉眼雙手合十——它是隨時隨地與神對話。在通勤路上、在工作間隙、在睡前片刻，都可以跟神說說話。',
+        verse: '「不住地禱告。」',
+        verseRef: '帖撒羅尼迦前書 5:17',
+        prayer: '天父，求祢幫助我養成不住禱告的習慣。不只是在靈修時間，而是在每個時刻都與祢同在、與祢對話。阿們。'
+    },
+    {
+        day: 28, weekday: '六', lunar: '', title: '二月的尾聲',
+        categories: ['calm'],
+        quiet: '二月即將結束，但你與神的旅程不會結束。回顧這個月，你經歷了預備、過年、收心，每一步都有神的陪伴。帶著這份信心，繼續向前走！',
+        verse: '「那美好的仗我已經打過了，當跑的路我已經跑盡了，所信的道我已經守住了。」',
+        verseRef: '提摩太後書 4:7',
+        prayer: '主啊，感謝祢這個月的帶領。雖然二月結束了，但我與祢的關係才剛開始更深。求祢繼續帶領我，直到永遠。阿們。'
+    }
 ];
-const BACK_P = [
-  {bg:'#ffffff',tx:'#2d2d2d'},{bg:'#faf9f6',tx:'#1a1a2e'},{bg:'#f0f4f8',tx:'#1a202c'},
-  {bg:'#fefce8',tx:'#713f12'},{bg:'#f0fdf4',tx:'#14532d'},{bg:'#fdf2f8',tx:'#831843'},
-  {bg:'#eff6ff',tx:'#1e3a8a'},{bg:'#f5f3ff',tx:'#4c1d95'},{bg:'#fff7ed',tx:'#7c2d12'},
-  {bg:'#ecfdf5',tx:'#064e3b'},{bg:'#fef2f2',tx:'#7f1d1d'},{bg:'#f8fafc',tx:'#334155'},
-  {bg:'#fffbeb',tx:'#78350f'},{bg:'#f0fdfa',tx:'#134e4a'},
-  {bg:'#2d2d2d',tx:'#f0f0f0'},{bg:'#1a1a2e',tx:'#e0e0e0'},
-  {bg:'#faf5ff',tx:'#581c87'},{bg:'#fff1f2',tx:'#9f1239'},
-  {bg:'#f7fee7',tx:'#3f6212'},{bg:'#fefce8',tx:'#854d0e'},{bg:'#e0f2fe',tx:'#075985'},
+
+// ============================================================
+//  LocalStorage
+// ============================================================
+function getUser() { return localStorage.getItem('3c_user') || ''; }
+function setUser(n) { localStorage.setItem('3c_user', n); }
+function removeUser() { localStorage.removeItem('3c_user'); }
+
+function getChecked() {
+    try { return JSON.parse(localStorage.getItem('3c_checked') || '{}'); } 
+    catch { return {}; }
+}
+function setChecked(day) {
+    const c = getChecked();
+    c[day] = new Date().toISOString();
+    localStorage.setItem('3c_checked', JSON.stringify(c));
+}
+function isChecked(day) { return !!getChecked()[day]; }
+function checkedCount() { return Object.keys(getChecked()).length; }
+
+// ============================================================
+//  Init
+// ============================================================
+function init() {
+    renderCalendarGrid();
+    renderDayList();
+    const user = getUser();
+    if (user) showLoggedIn(user);
+
+    document.getElementById('nameInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') login();
+    });
+}
+
+function login() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) { showToast('請輸入你的名字 ✏️'); return; }
+    setUser(name);
+    showLoggedIn(name);
+    showToast(`歡迎你，${name}！🎉`);
+}
+
+function logout() {
+    removeUser();
+    document.getElementById('loginSection').style.display = '';
+    document.getElementById('loggedInSection').style.display = 'none';
+    document.getElementById('progressDesc').textContent = '輸入名字即可記錄每日靈修打卡，追蹤您的進度';
+    document.getElementById('nameInput').value = '';
+}
+
+function showLoggedIn(name) {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('loggedInSection').style.display = '';
+    document.getElementById('displayName').textContent = name;
+    document.getElementById('progressDesc').style.display = 'none';
+    updateProgress();
+}
+
+function updateProgress() {
+    const count = checkedCount();
+    const pct = Math.round((count / 28) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('checkedCount').textContent = count;
+    document.getElementById('percentText').textContent = pct + '%';
+
+    // Update list items
+    document.querySelectorAll('.day-item').forEach(el => {
+        const day = el.dataset.day;
+        if (isChecked(day)) el.classList.add('checked');
+        else el.classList.remove('checked');
+    });
+
+    // Update calendar grid
+    document.querySelectorAll('.cal-day').forEach(el => {
+        const day = el.dataset.day;
+        if (day && isChecked(day)) el.classList.add('checked');
+        else el.classList.remove('checked');
+    });
+}
+
+// ============================================================
+//  Calendar Grid
+// ============================================================
+function renderCalendarGrid() {
+    const grid = document.getElementById('calendarGrid');
+    // Headers
+    WEEKDAYS.forEach(w => {
+        grid.innerHTML += `<div class="cal-header">${w}</div>`;
+    });
+
+    // Feb 1, 2026 is a Sunday (day 0)
+    const today = new Date();
+    const todayDay = (today.getFullYear() === 2026 && today.getMonth() === 1) ? today.getDate() : -1;
+
+    DAYS_DATA.forEach(d => {
+        const isToday = d.day === todayDay;
+        const checked = isChecked(d.day);
+        const dots = d.categories.map(c => `<div class="cat-dot" style="background:var(--${c === 'connect' ? 'connect-blue' : c === 'care' ? 'care-red' : 'calm-green'})"></div>`).join('');
+        grid.innerHTML += `
+            <div class="cal-day ${isToday ? 'today' : ''} ${checked ? 'checked' : ''}" 
+                 data-day="${d.day}" onclick="openDetail(${d.day})">
+                <span class="num">${d.day}</span>
+                ${d.lunar ? `<span class="lunar">${d.lunar}</span>` : ''}
+                <div class="cat-dots">${dots}</div>
+            </div>
+        `;
+    });
+}
+
+// ============================================================
+//  Day List
+// ============================================================
+function renderDayList() {
+    const list = document.getElementById('dayList');
+    const today = new Date();
+    const todayDay = (today.getFullYear() === 2026 && today.getMonth() === 1) ? today.getDate() : -1;
+
+    list.innerHTML = DAYS_DATA.map((d, idx) => {
+        const tags = d.categories.map(c => {
+            const label = c === 'connect' ? 'Connect' : c === 'care' ? 'Care' : 'Calm';
+            return `<span class="tag ${c}">● ${label}</span>`;
+        }).join('');
+        const checked = isChecked(d.day);
+
+        return `
+            <div class="day-item ${checked ? 'checked' : ''}" 
+                 data-day="${d.day}" 
+                 style="animation-delay: ${Math.min(idx * 0.04, 0.8)}s"
+                 onclick="openDetail(${d.day})">
+                <div class="date-col">
+                    <div class="date-num">${d.day}</div>
+                    <div class="date-weekday">${d.weekday}</div>
+                </div>
+                <div class="divider"></div>
+                <div class="content-col">
+                    ${d.lunar ? `<div class="lunar-label">${d.lunar}</div>` : ''}
+                    <div class="title">${d.title}</div>
+                    <div class="tags">${tags}</div>
+                </div>
+                <div class="arrow">›</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ============================================================
+//  Day Detail
+// ============================================================
+function openDetail(day) {
+    const d = DAYS_DATA.find(x => x.day === day);
+    if (!d) return;
+
+    const overlay = document.getElementById('detailOverlay');
+    const body = document.getElementById('detailBody');
+    const headerTitle = document.getElementById('detailHeaderTitle');
+
+    headerTitle.textContent = `2/${d.day} ${d.title}`;
+
+    const tags = d.categories.map(c => {
+        const label = c === 'connect' ? 'Connect 連結' : c === 'care' ? 'Care 關心' : 'Calm 安靜';
+        return `<span class="tag ${c}" style="font-size:13px;padding:4px 12px">● ${label}</span>`;
+    }).join('');
+
+    const checked = isChecked(d.day);
+
+    body.innerHTML = `
+        <div class="detail-date-badge">
+            📅 2026 年 2 月 ${d.day} 日（${d.weekday}）${d.lunar ? ' · ' + d.lunar : ''}
+        </div>
+
+        <h1 class="detail-title">${d.title}</h1>
+
+        <div class="detail-tags">${tags}</div>
+
+        <div class="detail-section">
+            <div class="detail-section-label">🧘 靜心時刻</div>
+            <div class="detail-quiet">${d.quiet}</div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-section-label">📖 今日經文</div>
+            <div class="detail-verse">
+                <div class="verse-text">${d.verse}</div>
+                <div class="verse-ref">— ${d.verseRef}</div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-section-label">🙏 禱告</div>
+            <div class="detail-prayer">
+                <div class="prayer-text">${d.prayer}</div>
+            </div>
+        </div>
+
+        <button class="detail-checkin-btn ${checked ? 'checked' : ''}" 
+                id="checkinBtn" onclick="checkIn(${d.day})">
+            ${checked ? '✅ 已完成打卡' : '☐ 完成今日靈修打卡'}
+        </button>
+
+        <div style="text-align:center; margin-top:16px;">
+            <button class="btn btn-outline" onclick="shareDay(${d.day})" style="font-size:13px">
+                📤 分享今日靈修
+            </button>
+        </div>
+    `;
+
+    overlay.classList.remove('closing');
+    overlay.classList.add('active');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+    const overlay = document.getElementById('detailOverlay');
+    overlay.classList.add('closing');
+    setTimeout(() => {
+        overlay.classList.remove('active', 'closing');
+        document.body.style.overflow = '';
+    }, 300);
+}
+
+function checkIn(day) {
+    if (!getUser()) {
+        showToast('請先輸入名字再打卡 ✏️');
+        closeDetail();
+        return;
+    }
+    if (isChecked(day)) return;
+
+    setChecked(day);
+    const btn = document.getElementById('checkinBtn');
+    btn.classList.add('checked');
+    btn.innerHTML = '✅ 已完成打卡';
+    btn.style.animation = 'popIn 0.4s ease';
+
+    updateProgress();
+    showConfetti();
+    showToast('🎉 打卡成功！願主賜福你！');
+}
+
+function shareDay(day) {
+    const d = DAYS_DATA.find(x => x.day === day);
+    if (!d) return;
+    const text = `【3C陪你過年不NG】2/${d.day} ${d.title}\n\n${d.verse}\n— ${d.verseRef}\n\n🙏 ${d.prayer}`;
+
+    if (navigator.share) {
+        navigator.share({ title: `3C靈修 2/${d.day}`, text }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(text).then(() => showToast('已複製到剪貼簿 📋'));
+    }
+}
+
+// ============================================================
+//  Calendar Export
+// ============================================================
+function addGoogleCal() {
+    const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=3C靈修月曆&dates=20260201/20260301&details=3C陪你過年不NG+靈修月曆';
+    window.open(url, '_blank');
+}
+
+function addIphoneCal() {
+    // Generate ICS file
+    let ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//3C Calendar//EN
+`;
+    DAYS_DATA.forEach(d => {
+        const dayStr = d.day.toString().padStart(2, '0');
+        ics += `BEGIN:VEVENT
+DTSTART;VALUE=DATE:202602${dayStr}
+SUMMARY:3C靈修：${d.title}
+DESCRIPTION:${d.verse} ${d.verseRef}
+END:VEVENT
+`;
+    });
+    ics += 'END:VCALENDAR';
+
+    const blob = new Blob([ics], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '3C靈修月曆.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('正在下載行事曆檔案 📅');
+}
+
+// ============================================================
+//  Confetti
+// ============================================================
+function showConfetti() {
+    const colors = ['#C9A84C', '#DC2626', '#16A34A', '#2563EB', '#FFD700', '#FF6B6B'];
+    for (let i = 0; i < 20; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = (30 + Math.random() * 40) + '%';
+        piece.style.top = (40 + Math.random() * 20) + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = (Math.random() * 0.3) + 's';
+        piece.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 1500);
+    }
+}
+
+// ============================================================
+//  Toast
+// ============================================================
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ============================================================
+// ============================================================
+//  SCRATCH CARD
+// ============================================================
+let scratchRevealed = false;
+let isDrawing = false;
+let currentScratchVerse = null;
+
+const SCRATCH_VERSES = [
+    { emoji: '📖', verse: '「最要緊的是彼此切實相愛，因為愛能遮掩許多的罪。」', ref: '彼得前書 4:8', prayer: '主耶穌，求祢將切實相愛的心放在我們當中。願愛遮掩過錯，使我們的關係更加和睦。' },
+    { emoji: '🕊️', verse: '「你們要將一切的憂慮卸給神，因為他顧念你們。」', ref: '彼得前書 5:7', prayer: '天父，感謝祢時刻顧念我們。幫助我們將重擔交給祢，在祢的愛中得著安息。' },
+    { emoji: '🌟', verse: '「我留下平安給你們，我將我的平安賜給你們。你們心裡不要憂愁，也不要膽怯。」', ref: '約翰福音 14:27', prayer: '主耶穌，謝謝祢賜下超越世界的平安。願這平安充滿我們的心，不再憂愁膽怯。' },
+    { emoji: '💪', verse: '「我靠著那加給我力量的，凡事都能做。」', ref: '腓立比書 4:13', prayer: '主啊，感謝祢是我力量的源頭。求祢加添我力量，讓我勇敢面對一切挑戰。' },
+    { emoji: '🌈', verse: '「耶和華說：我知道我向你們所懷的意念，是賜平安的意念，不是降災禍的意念，要叫你們末後有指望。」', ref: '耶利米書 29:11', prayer: '天父，感謝祢對我們的美好計劃。求祢引導我們的腳步，行在祢的旨意中。' },
+    { emoji: '🙏', verse: '「你們祈求，就給你們；尋找，就尋見；叩門，就給你們開門。」', ref: '馬太福音 7:7', prayer: '主耶穌，感謝祢聆聽我們的禱告。賜我們信心，更多來到祢面前尋求。' },
+    { emoji: '☀️', verse: '「但那等候耶和華的，必重新得力。他們必如鷹展翅上騰。」', ref: '以賽亞書 40:31', prayer: '主啊，求祢教導我們在忙碌中學會等候，在祢裡面重新得力。' },
+    { emoji: '❤️', verse: '「神愛世人，甚至將他的獨生子賜給他們，叫一切信他的，不至滅亡，反得永生。」', ref: '約翰福音 3:16', prayer: '天父，感謝祢無條件的愛。願我們更深經歷祢的愛，也將這份愛分享出去。' },
+    { emoji: '🌿', verse: '「應當一無掛慮，只要凡事藉著禱告、祈求和感謝，將你們所要的告訴神。」', ref: '腓立比書 4:6', prayer: '主啊，幫助我們學會凡事交託。願我們用感恩的心面對每一天。' },
+    { emoji: '🔥', verse: '「耶和華是我的牧者，我必不致缺乏。」', ref: '詩篇 23:1', prayer: '主耶穌，感謝祢做我們的好牧者。求祢帶領我們走過每一天。' },
+    { emoji: '🎵', verse: '「你們要嘗嘗主恩的滋味，便知道他是美善；投靠他的人有福了！」', ref: '詩篇 34:8', prayer: '天父，求祢開我們的眼睛，讓我們品嚐祢的恩典，經歷祢的美善。' },
+    { emoji: '🌸', verse: '「喜樂的心乃是良藥；憂傷的靈使骨枯乾。」', ref: '箴言 17:22', prayer: '主啊，求祢將喜樂的心賜給我們。願喜樂從祢而來，成為醫治和祝福。' },
+    { emoji: '⭐', verse: '「你的話是我腳前的燈，是我路上的光。」', ref: '詩篇 119:105', prayer: '主耶穌，感謝祢的話語照亮人生。求祢帶領我們更多親近祢的話語。' },
+    { emoji: '🫶', verse: '「愛是恆久忍耐，又有恩慈；愛是不嫉妒，愛是不自誇，不張狂。」', ref: '哥林多前書 13:4', prayer: '主啊，求祢將真實的愛澆灌在我們心中。願我們學像基督去愛身邊的人。' },
+    { emoji: '🕯️', verse: '「在世上你們有苦難，但你們可以放心，我已經勝了世界。」', ref: '約翰福音 16:33', prayer: '主耶穌，感謝祢已經得勝。無論遇到什麼困難，幫助我們倚靠祢得著平安。' }
 ];
 
-function renderSwatches(){
-  Q('#frontSwatches').innerHTML = FRONT_P.map((p,i)=>
-    `<div class="swatch ${p.light?'light':''} ${i===0?'active':''}" style="background:${p.bg}" onclick="pickFront(${i},this)"></div>`
-  ).join('');
-  Q('#backSwatches').innerHTML = BACK_P.map((p,i)=>
-    `<div class="swatch ${p.light?'light':''} ${i===0?'active':''}" style="background:${p.bg}${p.bg==='#ffffff'?';border-color:var(--ink-20)':''}" onclick="pickBack(${i},this)"></div>`
-  ).join('');
+function loadScratchCard() {
+    currentScratchVerse = SCRATCH_VERSES[Math.floor(Math.random() * SCRATCH_VERSES.length)];
+    scratchRevealed = false;
+    document.getElementById('scEmoji').textContent = currentScratchVerse.emoji;
+    document.getElementById('scVerse').textContent = currentScratchVerse.verse;
+    document.getElementById('scRef').textContent = currentScratchVerse.ref;
+    document.getElementById('scPrayer').textContent = currentScratchVerse.prayer;
+    document.getElementById('scratchActions').style.display = 'none';
+    document.getElementById('scratchHint').classList.remove('hidden');
+    const canvas = document.getElementById('scratchCanvas');
+    canvas.style.display = '';
+    canvas.style.opacity = '1';
+    setTimeout(() => initScratchCanvas(), 150);
 }
 
-function pickFront(i,el){
-  const p=FRONT_P[i];
-  setVar('--card-front-bg',p.bg); setVar('--card-front-color',p.tx);
-  Q('#cFrontBg').value=p.bg; Q('#cFrontTx').value=p.tx;
-  QQ('#frontSwatches .swatch').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
-}
-function pickBack(i,el){
-  const p=BACK_P[i];
-  setVar('--card-back-bg',p.bg); setVar('--card-back-color',p.tx);
-  Q('#cBackBg').value=p.bg; Q('#cBackTx').value=p.tx;
-  QQ('#backSwatches .swatch').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
-  QQ('.flashcard-fold .fold-text').forEach(e=>e.style.background=p.bg);
-}
-function setFrontCustom(c){
-  setVar('--card-front-bg',c);
-  QQ('#frontSwatches .swatch').forEach(s=>s.classList.remove('active'));
-}
-function setBackCustom(c){
-  setVar('--card-back-bg',c);
-  QQ('#backSwatches .swatch').forEach(s=>s.classList.remove('active'));
-  QQ('.flashcard-fold .fold-text').forEach(e=>e.style.background=c);
-}
-function setCols(n,btn){
-  setVar('--cards-per-row',n);
-  QQ('.pp-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+function initScratchCanvas() {
+    const canvas = document.getElementById('scratchCanvas');
+    const card = document.getElementById('scratchCard');
+    if (!card.offsetWidth) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = card.offsetWidth * dpr;
+    canvas.height = card.offsetHeight * dpr;
+    canvas.style.width = card.offsetWidth + 'px';
+    canvas.style.height = card.offsetHeight + 'px';
+    ctx.scale(dpr, dpr);
+    const w = card.offsetWidth, h = card.offsetHeight;
+
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#C9A84C');
+    grad.addColorStop(0.3, '#E8D48B');
+    grad.addColorStop(0.5, '#C9A84C');
+    grad.addColorStop(0.7, '#A07D2E');
+    grad.addColorStop(1, '#8B6914');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.save(); ctx.globalAlpha = 0.1;
+    for (let i = 0; i < 15; i++) {
+        ctx.beginPath();
+        ctx.arc(Math.random() * w, Math.random() * h, 15 + Math.random() * 35, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff'; ctx.fill();
+    }
+    ctx.restore();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = `bold ${Math.min(w * 0.065, 24)}px 'Noto Serif TC', serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('✨ 祝福刮刮包 ✨', w / 2, h / 2 - 14);
+    ctx.font = `${Math.min(w * 0.038, 14)}px 'Noto Sans TC', sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText('用手指刮開領取祝福', w / 2, h / 2 + 16);
+    ctx.globalCompositeOperation = 'destination-out';
+    isDrawing = false;
+
+    canvas.onmousedown = e => startScratch(e, canvas, ctx);
+    canvas.onmousemove = e => doScratch(e, canvas, ctx);
+    canvas.onmouseup = () => { isDrawing = false; checkScratchReveal(canvas); };
+    canvas.onmouseleave = () => { isDrawing = false; };
+    canvas.ontouchstart = e => { e.preventDefault(); startScratch(e.touches[0], canvas, ctx); };
+    canvas.ontouchmove = e => { e.preventDefault(); doScratch(e.touches[0], canvas, ctx); };
+    canvas.ontouchend = () => { isDrawing = false; checkScratchReveal(canvas); };
 }
 
-/* ===== UPLOAD ===== */
-let csvData=[],csvHeaders=[],cards=[],answersVisible=true;
-const fileInput=Q('#fileInput');
+function getScratchPos(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
 
-fileInput.addEventListener('change',e=>{if(e.target.files.length) handleFile(e.target.files[0]);});
+function startScratch(e, canvas, ctx) {
+    isDrawing = true;
+    const pos = getScratchPos(e, canvas);
+    ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+    document.getElementById('scratchHint').classList.add('hidden');
+}
 
-// Drag on whole page
-document.addEventListener('dragover',e=>e.preventDefault());
-document.addEventListener('drop',e=>{
-  e.preventDefault();
-  if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+function doScratch(e, canvas, ctx) {
+    if (!isDrawing) return;
+    const pos = getScratchPos(e, canvas);
+    ctx.lineWidth = 36; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.lineTo(pos.x, pos.y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+    checkScratchReveal(canvas);
+}
+
+function checkScratchReveal(canvas) {
+    if (scratchRevealed) return;
+    const ctx = canvas.getContext('2d');
+    const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparent = 0;
+    for (let i = 3; i < pixels.length; i += 16) { if (pixels[i] === 0) transparent++; }
+    if (transparent / (pixels.length / 16) > 0.45) revealScratch(canvas);
+}
+
+function revealScratch(canvas) {
+    scratchRevealed = true;
+    canvas.style.transition = 'opacity 0.8s ease';
+    canvas.style.opacity = '0';
+    setTimeout(() => { canvas.style.display = 'none'; }, 800);
+    document.getElementById('scratchActions').style.display = 'flex';
+    showConfetti();
+    showToast('🎉 願上帝祝福你！');
+}
+
+function scratchAgain() {
+    loadScratchCard();
+    document.getElementById('scratchSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function shareScratch() {
+    if (!currentScratchVerse) return;
+    const text = `${currentScratchVerse.verse}\n— ${currentScratchVerse.ref}\n\n🙏 ${currentScratchVerse.prayer}\n\n✨ 來自「3C陪你過年不NG」的祝福`;
+    if (navigator.share) { navigator.share({ title: '屬靈祝福刮刮包', text }).catch(() => {}); }
+    else { navigator.clipboard.writeText(text).then(() => showToast('已複製到剪貼簿 📋')); }
+}
+
+//  Back button / ESC
+// ============================================================
+window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDetail();
 });
 
-function handleFile(file){
-  if(!file.name.match(/\.(csv|tsv|txt)$/i)){alert('請上傳 CSV / TSV / TXT 檔案');return;}
-  Papa.parse(file,{
-    header:true, skipEmptyLines:true, encoding:'UTF-8',
-    complete:r=>{
-      if(!r.data.length){alert('檔案無資料');return;}
-      csvData=r.data; csvHeaders=r.meta.fields||[];
-      // Update header button
-      const btn=Q('#uploadBtn');
-      btn.classList.add('has-file');
-      Q('#headerUpload').innerHTML=`
-        <div class="header-upload-btn has-file">✅ <span>${file.name}</span></div>
-        <span class="header-file-name">${csvData.length} 行 · ${csvHeaders.length} 欄</span>
-        <button class="header-file-clear" onclick="resetAll()">✕ 移除</button>
-        <div class="header-upload-btn" onclick="document.getElementById('fileInput2').click()" style="border-color:rgba(255,255,255,0.2)">
-          📄 換新 CSV
-          <input type="file" id="fileInput2" accept=".csv,.tsv,.txt" style="display:none" onchange="if(this.files.length)handleFile(this.files[0])">
-        </div>
-      `;
-      showMapping();
-    },
-    error:e=>alert('解析失敗: '+e.message)
-  });
-}
+window.addEventListener('popstate', () => {
+    if (document.getElementById('detailOverlay').classList.contains('active')) {
+        closeDetail();
+    }
+});
 
-/* ===== MAPPING ===== */
-const fKW=['front','question','q','term','word','prompt','問題','題目','正面','詞語','概念'];
-const bKW=['back','answer','a','definition','response','explanation','答案','解答','背面','定義','解釋'];
-const tKW=['tag','category','topic','chapter','type','group','分類','標籤','主題','章節','類別'];
-function det(kws){
-  for(const k of kws){const f=csvHeaders.find(h=>h.toLowerCase().trim()===k);if(f)return f;}
-  for(const k of kws){const f=csvHeaders.find(h=>h.toLowerCase().includes(k));if(f)return f;}
-  return null;
-}
-function showMapping(){
-  const o=csvHeaders.map(h=>`<option value="${h}">${h}</option>`).join('');
-  Q('#mapFront').innerHTML=o; Q('#mapBack').innerHTML=o;
-  Q('#mapTag').innerHTML=`<option value="">— 無 —</option>`+o;
-  const df=det(fKW),db=det(bKW),dt=det(tKW);
-  if(df) Q('#mapFront').value=df; else if(csvHeaders.length>=1) Q('#mapFront').value=csvHeaders[0];
-  if(db) Q('#mapBack').value=db; else if(csvHeaders.length>=2) Q('#mapBack').value=csvHeaders[1];
-  if(dt) Q('#mapTag').value=dt;
-  if(csvHeaders.length<=3&&df&&db){applyMapping();return;}
-  Q('#mappingOverlay').classList.add('active');
-}
+// ============================================================
+//  Boot
+// ============================================================
+document.addEventListener('DOMContentLoaded', init);
 
-function applyMapping(){
-  const fc=Q('#mapFront').value,bc=Q('#mapBack').value,tc=Q('#mapTag').value;
-  if(fc===bc){alert('正面同背面唔可以用同一欄');return;}
-  cards=csvData.filter(r=>(r[fc]||'').trim()||(r[bc]||'').trim())
-    .map((r,i)=>({num:i+1,front:(r[fc]||'').trim(),back:(r[bc]||'').trim(),tag:tc?(r[tc]||'').trim():''}));
-  if(!cards.length){alert('搵唔到有效資料');return;}
-  Q('#mappingOverlay').classList.remove('active');
-  renderCards();
-  showSections();
-}
+// Load scratch card after DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    loadScratchCard();
+});
 
-function showSections(){
-  QQ('.hidden-section').forEach(el=>el.style.display='');
-  Q('#panelIntro').style.display='none';
-}
-
-/* ===== RENDER ===== */
-function renderCards(){
-  const grid=Q('#cardsGrid');
-  const tags=[...new Set(cards.map(c=>c.tag).filter(Boolean))];
-  grid.innerHTML=cards.map(c=>`
-    <div class="flashcard">
-      <div class="flashcard-front">
-        <span class="card-num">#${c.num}</span>
-        <div class="content">${esc(c.front)}</div>
-      </div>
-      <div class="flashcard-fold">
-        <div class="flashcard-fold-line"></div>
-        <span class="scissors">✂</span>
-        <span class="fold-text">↑ 沿虛線摺疊 fold here ↓</span>
-      </div>
-      <div class="flashcard-back answer-area">
-        <div class="content">${esc(c.back)}</div>
-        ${c.tag?`<div class="tag"><span>${esc(c.tag)}</span></div>`:''}
-      </div>
-    </div>`).join('');
-
-  const backBg=getComputedStyle(document.documentElement).getPropertyValue('--card-back-bg').trim();
-  QQ('.flashcard-fold .fold-text').forEach(e=>e.style.background=backBg);
-
-  Q('#cardsContainer').classList.add('active');
-  Q('#statsBar').classList.add('active');
-  Q('#emptyState').style.display='none';
-  Q('#statTotal').textContent=cards.length;
-  Q('#statTags').textContent=tags.length;
-  Q('#printMeta').textContent=`共 ${cards.length} 張閃卡 · ${new Date().toLocaleDateString('zh-HK')}`;
-  answersVisible=true;
-}
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-
-function toggleAnswers(){
-  answersVisible=!answersVisible;
-  QQ('.answer-area').forEach(el=>el.style.display=answersVisible?'':'none');
-  QQ('.flashcard-fold').forEach(el=>el.style.display=answersVisible?'':'none');
-}
-
-/* ===== SAMPLE ===== */
-function loadSampleData(){
-  const csv=`Front,Back
-Kilo 文本編輯器最初是由誰開發的？,Salvatore Sanfilippo (又名 antirez)。
-Kilo 編輯器不依賴 ncurses 庫而是使用什麼來控制終端？,標準 VT100 終端轉義序列 (Terminal escape sequences)。
-在 C 語言中將終端設為「原始模式」的主要目的是什麼？,直接讀取按鍵輸入並禁用規範模式與回顯。
-Kilo 編輯器為了防止螢幕閃爍採用了什麼渲染技術？,手動緩衝 (Manual buffering) 寫入。
-Kilo Code 是基於哪兩個專案的功能集合而成？,Roo Code 與 Cline。
-Kilo Code CLI 1.0 的底層開源架構是基於哪一個專案？,OpenCode。
-Kilo Code 中的「Orchestrator」模式具備什麼核心能力？,將複雜任務拆解為多個子任務並協調不同的專業代理執行。
-在 Kilo Code CLI 中按哪一個鍵可以循環切換不同的代理模式？,Tab 鍵。`;
-  const p=Papa.parse(csv,{header:true,skipEmptyLines:true});
-  csvData=p.data; csvHeaders=p.meta.fields;
-  Q('#headerUpload').innerHTML=`
-    <div class="header-upload-btn has-file">📋 示範資料</div>
-    <span class="header-file-name">${csvData.length} 行</span>
-    <button class="header-file-clear" onclick="resetAll()">✕ 移除</button>
-    <div class="header-upload-btn" onclick="document.getElementById('fileInput2').click()" style="border-color:rgba(255,255,255,0.2)">
-      📄 換新 CSV
-      <input type="file" id="fileInput2" accept=".csv,.tsv,.txt" style="display:none" onchange="if(this.files.length)handleFile(this.files[0])">
-    </div>`;
-  showMapping();
-}
-
-/* ===== RESET ===== */
-function resetAll(){
-  csvData=[];csvHeaders=[];cards=[];
-  Q('#headerUpload').innerHTML=`
-    <div class="header-upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">
-      📄 上傳 CSV
-      <input type="file" id="fileInput" accept=".csv,.tsv,.txt" style="display:none">
-    </div>`;
-  Q('#fileInput').addEventListener('change',e=>{if(e.target.files.length)handleFile(e.target.files[0]);});
-  QQ('.hidden-section').forEach(el=>el.style.display='none');
-  Q('#panelIntro').style.display='';
-  Q('#cardsContainer').classList.remove('active');
-  Q('#statsBar').classList.remove('active');
-  Q('#cardsGrid').innerHTML='';
-  Q('#emptyState').style.display='';
-}
-
-/* ===== INIT ===== */
-renderSwatches();
-QQ('.hidden-section').forEach(el=>el.style.display='none');
+// Handle resize for scratch canvas
+let scratchResizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(scratchResizeTimer);
+    scratchResizeTimer = setTimeout(() => {
+        if (!scratchRevealed) initScratchCanvas();
+    }, 200);
+});
 </script>
+
 </body>
 </html>
